@@ -49,6 +49,10 @@ abilities. You might be surprised what you're capable of if you stick with it.
 
 ## Directory Structure
 
+* `Frame`: Inventor project for the aluminum frame. It houses nine 276mm x 276mm
+  x 12mm cast acrylic panels with 2mm clearance between each edge. The back of
+  the frame has slots for fitting perpendicular 
+
 * `Arrow PCB`: 2 layer 200mm x 200mm PCB used within each arrow containing 25
   WS2812B V5 LEDs arranged in an alternating 4,3 grid pattern and pins for 4
   FSRs connected using JST-XH and JST-ZE connectors. Created in KiCad. Each FSR
