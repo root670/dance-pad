@@ -7,8 +7,8 @@ Frame designed in Inventor 2021 using 30mm 8020 aluminum extrusions.
 * My design uses a 975mm high bar secured to the bottom row of the pad but it is
    not included in the Inventor project.
 * The panels are 276mm x 276mm x 12mm cast acrylic with 3.17mm (1/8") rounded
-   corners (note that the drawin shows these as 2mm, but the show that
-   fabricated only had a 1/8" roundover bit) and counterbore screws. They
+   corners (note that the drawin shows these as 2mm, but the shop that
+   fabricated them (TAP Plastics) only had a 1/8" roundover bit) and counterbore screws. They
    support M5 screws with a ~2mm OD standoff. The standoffs should allow for
    consistent pressure across all panels. A drawing of the panel specifications
    can be found in `Arrow Panel.pdf`.
