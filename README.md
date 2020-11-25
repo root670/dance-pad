@@ -14,8 +14,9 @@ attached to 160mm x 20mm transparency film with 4mil Velostat placed across the
 top. Wires are soldered to each of the copper tape strips and terminate to
 JST-XE connectors at the end to connect to the Arrow Panel PCB. According to
 papers I've read, creating FSR in this way will likely lead to less drifting
-over time compared to "sandwich" style sensors where Velostat is placed between two
-pieces of copper tape. This is similar to the method used by commercially-produced FSRs.
+over time compared to "sandwich" style sensors where Velostat is placed between
+two pieces of copper tape. This is similar to the method used by
+commercially-produced FSRs.
 
 ![Arrow Panel PCB](Images/ArrowPanelPCB.png)
 
@@ -58,13 +59,13 @@ abilities. You might be surprised what you're capable of if you stick with it.
   M4-sized terminals are on the corners of the PCB so it can be mounted to the
   frame using 3D printed parts (TODO).
 
-* `Main PCB`: Breakout board for a Teensy 4.1. Wires RJ45 connectors for
-  connections coming from 4 Arrow PCBs and screw terminals for up 5 LED strands
-  interfaced through 3.3V to 5V logic converters. The sensor wires are decoupled
-  with 3.3v wires in the cable to minimize interference. Supports JSR-XE (what
-  I'm using) and JST-ZH (What StepManiaX uses) for the sensors) connectors for
-  each sensor. Has M4-sized screw terminal to attach to 3D printed mounting
-  hardware (TODO).
+* `Main PCB`: 2 layer 100mm x 100mm breakout board for a Teensy 4.1. Wires RJ45
+  connectors for connections coming from 4 Arrow PCBs and screw terminals for up
+  5 LED strands interfaced through 3.3V to 5V logic converters. The sensor wires
+  are decoupled with 3.3v wires in the cable to minimize interference. Supports
+  JSR-XE (what I'm using) and JST-ZH (What StepManiaX uses) for the sensors)
+  connectors for each sensor. Has M4-sized screw terminal to attach to 3D
+  printed mounting hardware (TODO).
 
 * `Configurator`: Application to configure and debug the pad written in Python.
   Communicates with the firmware using a serial connection. Will likely use a
@@ -86,10 +87,10 @@ PCB need to be designed and printed.
 
 The arrows have counter bore screws but I made the larger part of the counter
 bore too small (It's a 9.53mm counterbore for a 7.94mm through hole, leaving
-~0.8mm radius for the counterbore. Whoops.). It's large enough to fit button-head
-M5 screws with a 3D printed spacer but M6 socket and button head screws will not
-fit unfortunately. These will work fine with M5 screws but the lesson learned is
-to not hastily order things like this in the future :-).
+~0.8mm radius for the counterbore. Whoops.). It's large enough to fit
+button-head M5 screws with a 3D printed spacer but M6 socket and button head
+screws will not fit unfortunately. These will work fine with M5 screws but the
+lesson learned is to not hastily order things like this in the future :-).
 
 Another possible issue I've found is that the pulldown resistors used in the
 Arrow PCB (330 ohm) might make the arrows to sensitive. This can be remedied by
