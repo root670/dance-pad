@@ -1,6 +1,6 @@
 # 8020 Extruded Aluminum Dance Pad
 
-*Stepmania: Way more fun than a Pelaton bike.*
+*StepMania: Way more fun than a Pelaton bike.*
 
 4-panel dance pad project using a frame built out of 30mm profile 8020
 ("T-Slot") extruded aluminum including a bar with 9 arrow panels following a
@@ -48,7 +48,7 @@ abilities. You might be surprised what you're capable of if you stick with it.
 
 ## Directory Structure
 
-* Arrow PCB: 2 layer 200mm x 200mm PCB used within each arrow containing 25
+* `Arrow PCB`: 2 layer 200mm x 200mm PCB used within each arrow containing 25
   WS2812B V5 LEDs arranged in an alternating 4,3 grid pattern and pins for 4
   FSRs connected using JST-XH and JST-ZE connectors. Created in KiCad. Each FSR
   uses a 330 ohm pull down resistor to ground. The board is connected to the
@@ -58,7 +58,7 @@ abilities. You might be surprised what you're capable of if you stick with it.
   M4-sized terminals are on the corners of the PCB so it can be mounted to the
   frame using 3D printed parts (TODO).
 
-* Main PCB: Breakout board for a Teensy 4.1. Wires RJ45 connectors for
+* `Main PCB`: Breakout board for a Teensy 4.1. Wires RJ45 connectors for
   connections coming from 4 Arrow PCBs and screw terminals for up 5 LED strands
   interfaced through 3.3V to 5V logic converters. The sensor wires are decoupled
   with 3.3v wires in the cable to minimize interference. Supports JSR-XE (what
@@ -66,12 +66,12 @@ abilities. You might be surprised what you're capable of if you stick with it.
   each sensor. Has M4-sized screw terminal to attach to 3D printed mounting
   hardware (TODO).
 
-* Configurator: Application to configure and debug the pad written in Python.
+* `Configurator`: Application to configure and debug the pad written in Python.
   Communicates with the firmware using a serial connection. Will likely use a
   web interface for the frontend and communicate with the backend using
   WebSockets.
 
-* Firmware: Code that runs on the Teensy. Reads sensor values, listens for
+* `Firmware`: Code that runs on the Teensy. Reads sensor values, listens for
   serial messages, and controls the LEDs. Uses fixed timings for sending Joypad
   reports and updating the LEDs. The goal is for it to be easy enough to modify
   to support different pad layouts (i.e. 5 panel StepManiaX or Pump It Up pads)
