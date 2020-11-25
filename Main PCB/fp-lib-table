@@ -1,0 +1,7 @@
+(fp_lib_table
+  (lib (name footprints)(type KiCad)(uri ${KIPRJMOD}/footprints.pretty)(options "")(descr ""))
+  (lib (name RJHSE-5080)(type KiCad)(uri ${KIPRJMOD}/RJHSE-5080)(options "")(descr ""))
+  (lib (name SN74AHCT125PW)(type KiCad)(uri ${KIPRJMOD}/SN74AHCT125PW)(options "")(descr ""))
+  (lib (name "Main PCB")(type KiCad)(uri ${KIPRJMOD})(options "")(descr ""))
+  (lib (name 2020-11-20_23-37-32)(type KiCad)(uri ${KIPRJMOD}/ul_1935161/KiCAD/2020-11-20_23-37-32)(options "")(descr ""))
+)

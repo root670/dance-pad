@@ -1,0 +1,8 @@
+Comment,Designator,Footprint,LCSC
+1000u,C1,Capacitor_SMD:CP_Elec_8x10,C134755
+RJHSE-5080,"J1,J2,J3,J4",RJHSE-5080:AMPHENOL_RJHSE-5080,
+Conn_01x02,J5,footprints:1935161,
+Conn_01x03,"J6,J7,J8,J9,J10",footprints:1935174,
+Jumper,JP1,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,
+Teensy4.1,U1,Main PCB:Teensy41,
+SN74AHCT125PW,"U2,U3",SN74AHCT125PW:SOP65P640X120-14N,C36365 

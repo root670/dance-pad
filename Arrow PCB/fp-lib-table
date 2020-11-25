@@ -1,0 +1,5 @@
+(fp_lib_table
+  (lib (name "DDR Pad")(type KiCad)(uri "/Users/wes/Dropbox/DDR Pad/DDR Pad")(options "")(descr ""))
+  (lib (name RJHSE-5080)(type KiCad)(uri ${KIPRJMOD}/RJHSE-5080)(options "")(descr ""))
+  (lib (name footprints)(type KiCad)(uri ${KIPRJMOD}/footprints.pretty)(options "")(descr ""))
+)

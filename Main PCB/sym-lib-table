@@ -1,0 +1,5 @@
+(sym_lib_table
+  (lib (name teensy)(type Legacy)(uri ${KIPRJMOD}/teensy.lib)(options "")(descr ""))
+  (lib (name RJHSE-5080)(type Legacy)(uri ${KIPRJMOD}/RJHSE-5080/RJHSE-5080.lib)(options "")(descr ""))
+  (lib (name SN74AHCT125PW)(type Legacy)(uri ${KIPRJMOD}/SN74AHCT125PW/SN74AHCT125PW.lib)(options "")(descr ""))
+)
