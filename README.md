@@ -18,6 +18,8 @@ over time compared to "sandwich" style sensors where Velostat is placed between
 two pieces of copper tape. This is similar to the method used by
 commercially-produced FSRs.
 
+![Frame](Images/Frame.png)
+
 ![Arrow Panel PCB](Images/ArrowPanelPCB.png)
 
 ![Main PCB](Images/MainPCB.png)
