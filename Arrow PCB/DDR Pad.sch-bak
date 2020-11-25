@@ -1273,4 +1273,6 @@ Text GLabel 7750 3050 0    50   Input ~ 0
 UpN
 Text GLabel 7750 2450 0    50   Input ~ 0
 UpW
+Text GLabel 7750 2650 0    50   Input ~ 0
+UpS
 $EndSCHEMATC

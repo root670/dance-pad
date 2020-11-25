@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:DDR Pad-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -1163,7 +1164,7 @@ F 3 "" H 7750 2350 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Text Notes 8600 2750 0    50   ~ 0
-To Teensy Board\nFootprint on four sides of board,\nonly one needs to be populated
+To Teensy Board
 $Comp
 L Connector_Generic:Conn_01x02 J_E_ZE1
 U 1 1 5FACC339
