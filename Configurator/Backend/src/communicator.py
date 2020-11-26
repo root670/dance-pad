@@ -41,8 +41,8 @@ class Communicator:
 
     def __init__(
         self,
-        ser=serial.Serial('/dev/cu.usbmodem60430801', timeout=1)
-    ):
+        ser: serial.Serial
+    ) -> None:
         """Communicate with the firmware using a serial interface.
 
         Args:
