@@ -5,9 +5,23 @@ from unittest.mock import Mock
 import pytest
 from serial import Serial
 
-from base.communicator import Communicator
+from base.communicator import Communicator, PanelOrientation
 
 from .stubs import PANEL_CONFIG_RESPONSE, SENSOR_VALUES_RESPONSE
+
+class TestPanelConfiguration:
+
+    def test_should_return_value_for_valid_degrees(self):
+        for degrees in [0, 90, 180, 270]:
+            ret = PanelOrientation.from_degrees(degrees)
+            assert type(ret) == PanelOrientation
+
+    def test_should_throw_exception_for_bad_degrees(self):
+        with pytest.raises(Exception):
+            PanelOrientation.from_degrees(-1)
+            PanelOrientation.from_degrees()
+            PanelOrientation.from_degrees('0')
+            PanelOrientation.from_degrees(360)
 
 
 class TestCommunicator:
