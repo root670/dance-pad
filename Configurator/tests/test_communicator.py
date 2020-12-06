@@ -5,7 +5,7 @@ from unittest.mock import Mock
 import pytest
 from serial import Serial
 
-from src.communicator import Communicator
+from base.communicator import Communicator
 
 from .stubs import PANEL_CONFIG_RESPONSE, SENSOR_VALUES_RESPONSE
 
