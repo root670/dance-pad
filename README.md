@@ -31,12 +31,12 @@ pads recently to replace contact-based sensors and many designs have been
 created. I decided to create a design for a full pad that is durable but doesn't
 require power tools to build. I also wanted to gain experience using Inventor
 and KiCad and share my design with others who may find it useful. It's certainly
-not the best design, but the experience I've gained in the progress is
+not the best design, but the experience I've gained in the process is
 invaluable.
 
-Having a personal projects to come back to is a great and productive way to
-increase your creative and technical skills, especially during COVID times. And
-if the project involves maintaining your physical health, that's even better! I
+Having personal projects to come back to is a great and productive way to
+improve your creative and technical skills, especially during COVID times. And
+when the project involves maintaining your physical health, that's even better! I
 can't stress enough how rewarding it is to start a project, work on in over the
 course of a few months, and see it through to completion. Soapbox aside, I
 highly recommend attempting projects for things that seem slightly out of your
@@ -53,7 +53,7 @@ abilities. You might be surprised what you're capable of if you stick with it.
 
 * `Frame`: Inventor project for the aluminum frame. It houses nine 276mm x 276mm
   x 12mm cast acrylic panels with 2mm clearance between each edge. The back of
-  the frame has slots for fitting perpendicular 
+  the frame has slots for securing a bar.
 
 * `Arrow PCB`: 2 layer 200mm x 200mm PCB used within each arrow containing 25
   WS2812B V5 LEDs arranged in an alternating 4,3 grid pattern and pins for 4
@@ -65,18 +65,14 @@ abilities. You might be surprised what you're capable of if you stick with it.
   M4-sized terminals are on the corners of the PCB so it can be mounted to the
   frame using 3D printed parts (TODO).
 
-* `Main PCB`: 2 layer 100mm x 100mm breakout board for a Teensy 4.1. Wires RJ45
+* `Main PCB`: 2 layer ~100mm x ~100mm breakout board for a Teensy 4.1. Wires RJ45
   connectors for connections coming from 4 Arrow PCBs and screw terminals for up
   5 LED strands interfaced through 3.3V to 5V logic converters. The sensor wires
-  are decoupled with 3.3v wires in the cable to minimize interference. Supports
-  JSR-XE (what I'm using) and JST-ZH (What StepManiaX uses) for the sensors)
-  connectors for each sensor. Has M4-sized screw terminal to attach to 3D
+  are decoupled with 3.3v wires in the cable to minimize interference. Has M4-sized screw terminal to attach to 3D
   printed mounting hardware (TODO).
 
 * `Configurator`: Application to configure and debug the pad written in Python.
-  Communicates with the firmware using a serial connection. Will likely use a
-  web interface for the frontend and communicate with the backend using
-  WebSockets.
+  Communicates with the firmware using a serial connection.
 
 * `Firmware`: Code that runs on the Teensy. Reads sensor values, listens for
   serial messages, and controls the LEDs. Uses fixed timings for sending Joypad
