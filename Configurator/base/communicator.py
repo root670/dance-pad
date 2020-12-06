@@ -38,6 +38,7 @@ class Communicator:
     COMMAND_VERSION = 'version'
     COMMAND_BLINK = 'blink'
     COMMAND_PANELCONFIG = 'panelconfig'
+    COMMAND_VALUES = 'v'
 
     def __init__(
         self,
@@ -96,7 +97,7 @@ class Communicator:
         Returns:
             Dictionary with mapping an arrow direction to dictionary of values for each sensor.
         """
-        self.__send_command('v')
+        self.__send_command(self.COMMAND_VALUES)
         values = self.__get_line().split(',')
         return dict(
             up=dict(
