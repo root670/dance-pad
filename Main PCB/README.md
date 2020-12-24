@@ -8,4 +8,10 @@ from each arrow and 5 3-pin screw terminals to connect the lights. An additional
 
 * At least a 6A 5V DC power supply is needed to support displaying all LEDs at
   maximum brightness.
-* **This design has not been tested yet!**
+
+## Issues
+
+* The LED pins for the four arrows  don't allow for "parallel output" with
+  FastLED or WS2812Serial because I didn't realize only a subset of pins support
+  that feature. The AuxLED pin however should work with parallel output.
+* Silkscreen labels are missing for most connectors.

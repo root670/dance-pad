@@ -13,4 +13,14 @@ the lights.
   this version is that have an internal capacitor so you don't the need to place
   an external capacitor between the positive voltage and ground pins. If an
   older version is used the LEDs will likely be damaged when they receive power.
-* **This design has not been tested yet!**
+
+## Issues
+
+* I was unable to get the LEDs to work reliably using multiple 3.3v and 5v
+  microcontrollers and WS2812B libraries. I believe there is something wrong
+  with my design or the LEDs sourced by LCSC were not actually the 5V
+  variations. LCSC has been unable to confirm if they are actually the V5
+  version.
+* The PCB is too big to fit within the frame underneath the panels when using
+  corner brackets. As a workaround the PCBs need to be placed underneath the
+  frame.

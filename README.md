@@ -65,11 +65,12 @@ abilities. You might be surprised what you're capable of if you stick with it.
   M4-sized terminals are on the corners of the PCB so it can be mounted to the
   frame using 3D printed parts (TODO).
 
-* `Main PCB`: 2 layer ~100mm x ~100mm breakout board for a Teensy 4.1. Wires RJ45
-  connectors for connections coming from 4 Arrow PCBs and screw terminals for up
-  5 LED strands interfaced through 3.3V to 5V logic converters. The sensor wires
-  are decoupled with 3.3v wires in the cable to minimize interference. Has M4-sized screw terminal to attach to 3D
-  printed mounting hardware (TODO).
+* `Main PCB`: 2 layer ~100mm x ~100mm breakout board for a Teensy 4.1. Wires
+  RJ45 connectors for connections coming from 4 Arrow PCBs and screw terminals
+  for up 5 LED strands interfaced through 3.3V to 5V logic converters. The
+  sensor wires are decoupled with 3.3v wires in the cable to minimize
+  interference. Has M4-sized screw terminal to attach to 3D printed mounting
+  hardware (TODO).
 
 * `Configurator`: Application to configure and debug the pad written in Python.
   Communicates with the firmware using a serial connection.
@@ -81,11 +82,8 @@ abilities. You might be surprised what you're capable of if you stick with it.
 
 ## Status
 
-The frame, acrylic panels, and PCB designs have been finalized. Arrow panels
-were fabricated by TAP Plastics and have been delivered. Parts for the frame
-have been ordered (8020 bars, corner brackets, corner plates, T-Slot nuts,
-fasteners, and end caps). The mounting hardware for the Arrow Panel PCB and Main
-PCB need to be designed and printed.
+The frame, acrylic panels, and PCB designs have been finalized, fabricated, and
+assembled.
 
 The arrows have counter bore screws but I made the larger part of the counter
 bore too small (It's a 9.53mm counterbore for a 7.94mm through hole, leaving
@@ -93,13 +91,3 @@ bore too small (It's a 9.53mm counterbore for a 7.94mm through hole, leaving
 button-head M5 screws with a 3D printed spacer but M6 socket and button head
 screws will not fit unfortunately. These will work fine with M5 screws but the
 lesson learned is to not hastily order things like this in the future :-).
-
-Another possible issue I've found is that the pulldown resistors used in the
-Arrow PCB (330 ohm) might make the arrows to sensitive. This can be remedied by
-removing the resistors (difficult) or soldering additional ones in parallel on
-top of them (easier) to create a parallel resistance. I'll need to wait for the
-Arrow Panel PCBs to know for sure if this will be an issue.
-
-The Configurator and Firmware components are in progress. MVP is to communicate
-with the board over serial and display the raw sensor values in a graph in the
-frontend.
