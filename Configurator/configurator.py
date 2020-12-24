@@ -3,25 +3,37 @@
 import math
 import sys
 import time
+import os
 
+from PyQt5 import uic
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication, QDialog
 import numpy as np
 import pyqtgraph as pg
 import qdarkstyle
+from serial.tools import list_ports
+from serial import Serial
 
-from gui.base import Ui_Dialog
+from base.communicator import Communicator
 
 
-class Dialog(QDialog, Ui_Dialog):
+class Dialog(QDialog):
     """Implementation of the main dialog.
     """
+
+    UI_FILE = os.path.join('resources', 'gui.ui')
 
     def __init__(self):
         super(Dialog, self).__init__()
 
         # Setup the user interface from Designer.
-        self.setupUi(self)
+        uic.loadUi(self.UI_FILE, self)
+
+        self.serial_ports = list_ports.comports()
+        self.comboBoxDevices.activated.connect(self.on_device_changed)
+        self.comboBoxDevices.addItem('Devices')
+        for index, port in enumerate(self.serial_ports):
+            self.comboBoxDevices.addItem(f'{index}: {port.device}')
 
         # Setup plots
         self.data_up = np.zeros(250)
@@ -36,9 +48,15 @@ class Dialog(QDialog, Ui_Dialog):
             self.data_left, pen=pg.mkPen('w', width=2))
         self.curve_right = self.plot_right.plot(
             self.data_right, pen=pg.mkPen('y', width=2))
+
         self.x = 0
 
-        for plot in [self.plot_up, self.plot_down, self.plot_left, self.plot_right]:
+        for plot in [
+            self.plot_up,
+            self.plot_down,
+            self.plot_left,
+            self.plot_right,
+        ]:
             plot.showAxis('bottom', show=False)
             plot.getAxis('left').showLabel(False)
 
@@ -76,6 +94,23 @@ class Dialog(QDialog, Ui_Dialog):
         self.curve_right.setData(self.data_right)
 
         self.x += 1
+
+    def on_device_changed(self, index: int):
+
+        device = self.serial_ports[index - 1].device
+        try:
+            serial = Serial(device)
+        except Exception as e:
+            self.labelDeviceInfo.setText(str(e))
+            return
+
+        self.comm = Communicator(
+            ser=serial
+        )
+
+        device_info = self.comm.get_version()
+
+        self.labelDeviceInfo.setText(f'Connected to {device}.\n\n{device_info}')
 
 
 def main():
