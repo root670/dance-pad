@@ -31,10 +31,10 @@ static char s_pSextetStream[14]; // Includes newline characteam
 #define PIN_RIGHT_S A14
 #define PIN_RIGHT_W A15
 
-Panel s_panelUp(enumPanelUp, enumPanelOrientation0, PIN_UP_N, PIN_UP_E, PIN_UP_S, PIN_UP_W);
-Panel s_panelDown(enumPanelDown, enumPanelOrientation270, PIN_DOWN_N, PIN_DOWN_E, PIN_DOWN_S, PIN_DOWN_W);
-Panel s_panelLeft(enumPanelLeft, enumPanelOrientation180, PIN_LEFT_N, PIN_LEFT_E, PIN_LEFT_S, PIN_LEFT_W);
-Panel s_panelRight(enumPanelRight, enumPanelOrientation0, PIN_RIGHT_N, PIN_RIGHT_E, PIN_RIGHT_S, PIN_RIGHT_W);
+static Panel s_panelUp(enumPanelUp, enumPanelOrientation0, PIN_UP_N, PIN_UP_E, PIN_UP_S, PIN_UP_W);
+static Panel s_panelDown(enumPanelDown, enumPanelOrientation270, PIN_DOWN_N, PIN_DOWN_E, PIN_DOWN_S, PIN_DOWN_W);
+static Panel s_panelLeft(enumPanelLeft, enumPanelOrientation180, PIN_LEFT_N, PIN_LEFT_E, PIN_LEFT_S, PIN_LEFT_W);
+static Panel s_panelRight(enumPanelRight, enumPanelOrientation0, PIN_RIGHT_N, PIN_RIGHT_E, PIN_RIGHT_S, PIN_RIGHT_W);
 
 // Joystick button mapping
 #define JOY_UP_BUTTON       1
@@ -62,7 +62,7 @@ void updatePanels()
 
 void setup()
 {
-    s_strVersion.concat("Dance Pad Firmware "__DATE__);
+    s_strVersion.concat("Dance Pad Firmware " __DATE__);
     s_strVersion.concat(' ');
     s_strVersion.concat(__TIME__);
 
@@ -273,12 +273,12 @@ void updateJoystick()
     Joystick.send_now();
 }
 
-elapsedMicros s_timeSinceJoystickUpdate;
-elapsedMicros s_timeSinceLEDUpdate;
-#define JOYSTICK_UPDATE_FREQUENCY   1000
+static elapsedMicros s_timeSinceJoystickUpdate;
+static elapsedMicros s_timeSinceLEDUpdate;
 
-uint32_t    s_joystickUpdateFrequency = 1000;
-uint32_t    s_LEDUpdateFrequency = 60;
+const uint32_t kMicrosPerSecond = 1000000;
+const uint32_t kJoystickUpdateFrequency = 1000;
+const uint32_t kLEDUpdateFrequency = 60;
 
 void loop()
 {
@@ -286,16 +286,16 @@ void loop()
     processSerialData();
 
     // Limit frequency of joystick reports
-    if(s_timeSinceJoystickUpdate >= 1000000/s_joystickUpdateFrequency)
+    if(s_timeSinceJoystickUpdate >= kMicrosPerSecond/kJoystickUpdateFrequency)
     {
-        s_timeSinceJoystickUpdate -= 1000000/s_joystickUpdateFrequency;
+        s_timeSinceJoystickUpdate -= kMicrosPerSecond/kJoystickUpdateFrequency;
         updateJoystick();
     }
 
     // // Limit frequency of LEDs
-    // if(s_timeSinceLEDUpdate >= 1000000/s_LEDUpdateFrequency)
+    // if(s_timeSinceLEDUpdate >= kMicrosPerSecond/kLEDUpdateFrequency)
     // {
-    //     s_timeSinceLEDUpdate -= 1000000/s_LEDUpdateFrequency;
+    //     s_timeSinceLEDUpdate -= kMicrosPerSecond/kLEDUpdateFrequency;
     //     FastLED.show();
     // }
 
