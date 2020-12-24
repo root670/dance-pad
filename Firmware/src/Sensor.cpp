@@ -11,9 +11,8 @@ uint32_t s_calibrationPeriodMS = 10000; // 10 seconds
 
 void Sensor::calibrate()
 {
-    m_nTriggerThreshold = m_nPressure + s_nTriggerThreshold;
-    m_nReleaseThreshold = m_nPressure + s_nReleaseThreshold;
-    // Serial.printf("%d: %d %d\n", m_nPin, m_nTriggerThreshold, m_nReleaseThreshold);
+    m_nTriggerThreshold = m_nPressure + m_nTriggerOffset;
+    m_nReleaseThreshold = m_nPressure + m_nReleaseOffset;
 }
 
 void Sensor::readSensor()
