@@ -71,6 +71,10 @@ void setup()
     Serial.begin(9600);
 
     Joystick.useManualSend(true);
+    Joystick.hat(-1);
+    Joystick.X(512);
+    Joystick.Y(512);
+    Joystick.Z(512);
 
     // Initial callibration
     calibratePanels();
