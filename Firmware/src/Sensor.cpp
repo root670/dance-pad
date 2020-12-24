@@ -1,7 +1,7 @@
 #include "Sensor.h"
 
 // Time in milliseconds of inactivity to cause a recalibration.
-uint32_t s_calibrationPeriodMS = 10000; // 10 seconds
+static uint32_t s_calibrationPeriodMS = 10000; // 10 seconds
 
 void Sensor::calibrate()
 {
