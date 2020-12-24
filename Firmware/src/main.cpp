@@ -171,8 +171,23 @@ void printSensorValues()
 //     g_pSextetStream[4] & 0x08; // P1 Pad Down
 // }
 
-void processSerialData()
+// Process data sent over the serial connection
+//
+// Input data can either be lighting data in SextetStream format or a command.
+// When the input is lighting data, no response is sent. All commands are
+// prefixed with `-` and have a single-line response terminated with a newline
+// character (`\n`).
+class SerialProcessor
 {
+public:
+    SerialProcessor()
+    {
+        m_strCommand.reserve(32);
+        m_strResponse.reserve(1024);
+    }
+
+    void update()
+    {
     if(Serial.available())
     {
         char c = Serial.read();
@@ -188,13 +203,15 @@ void processSerialData()
         else if(c == '-')
         {
             // Command terminated by newline
-            String strCommand = Serial.readStringUntil('\n');
-            strCommand.trim();
-            if(strCommand.equalsIgnoreCase("version"))
+                m_strCommand = Serial.readStringUntil('\n');
+                m_strCommand.trim();
+                m_strResponse = "";
+
+                if(m_strCommand.equalsIgnoreCase("version"))
             {
-                Serial.println(s_strVersion);
+                    m_strResponse = s_strVersion;
             }
-            else if(strCommand.equalsIgnoreCase("blink"))
+                else if(m_strCommand.equalsIgnoreCase("blink"))
             {
                 // Blink the builtin LED.
                 digitalWrite(LED_BUILTIN, HIGH);
@@ -205,64 +222,66 @@ void processSerialData()
                 delay(100);
                 digitalWrite(LED_BUILTIN, LOW);
             }
-            else if(strCommand.equalsIgnoreCase("panelconfig"))
+                else if(m_strCommand.equalsIgnoreCase("config"))
             {
-                // Print the configuration of the panels
-                Serial.print(s_panelUp.m_orientation);
-                Serial.print(',');
-                Serial.print(s_panelDown.m_orientation);
-                Serial.print(',');
-                Serial.print(s_panelLeft.m_orientation);
-                Serial.print(',');
-                Serial.print(s_panelRight.m_orientation);
-                Serial.print('\n');
+                    // Get the configuration of the panels
+                    m_strResponse.append(s_panelUp.m_orientation);
+                    m_strResponse.append(',');
+                    m_strResponse.append(s_panelDown.m_orientation);
+                    m_strResponse.append(',');
+                    m_strResponse.append(s_panelLeft.m_orientation);
+                    m_strResponse.append(',');
+                    m_strResponse.append(s_panelRight.m_orientation);
+                    m_strResponse.append(',');
+
+                    // Other config items
+                    // m_strResponse.append()
             }
-            else if(strCommand.equalsIgnoreCase("v"))
+                else if(m_strCommand.equalsIgnoreCase("v"))
+                {
+                    // Get the raw values and thresholds for each sensor
+                    for(auto const &panel : {
+                        s_panelUp,
+                        s_panelDown,
+                        s_panelLeft,
+                        s_panelRight
+                    })
+                    {
+                        for(auto const &sensor : {
+                            panel.getNorthSensor(),
+                            panel.getEastSensor(),
+                            panel.getSouthSensor(),
+                            panel.getWestSensor()
+                        })
             {
-                // Print the raw sensor values
-                Serial.print(s_panelUp.getNorthSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelUp.getEastSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelUp.getSouthSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelUp.getWestSensor().m_nPressure);
-                Serial.print(',');
+                            m_strResponse.append(sensor.m_nPressure);
+                            m_strResponse.append(',');
+                            m_strResponse.append(sensor.m_nTriggerThreshold);
+                            m_strResponse.append(',');
+                            m_strResponse.append(sensor.m_nReleaseThreshold);
+                            m_strResponse.append(',');
+                        }
+                    }
 
-                Serial.print(s_panelDown.getNorthSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelDown.getEastSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelDown.getSouthSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelDown.getWestSensor().m_nPressure);
-                Serial.print(',');
-
-                Serial.print(s_panelLeft.getNorthSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelLeft.getEastSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelLeft.getSouthSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelLeft.getWestSensor().m_nPressure);
-                Serial.print(',');
-
-                Serial.print(s_panelRight.getNorthSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelRight.getEastSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelRight.getSouthSensor().m_nPressure);
-                Serial.print(',');
-                Serial.print(s_panelRight.getWestSensor().m_nPressure);
-                Serial.print('\n');
+                    // Remove trailing comma
+                    m_strResponse.setCharAt(m_strResponse.length() - 1, '\0');
             }
             else
             {
-                Serial.println("Unknown command");
+                    m_strResponse = "Unknown command";
             }
+
+                Serial.println(m_strResponse);
         }
     }
 }
+
+private:
+
+    String m_strCommand, m_strResponse;
+};
+
+static SerialProcessor s_serialProcessor;
 
 void updateJoystick()
 {
