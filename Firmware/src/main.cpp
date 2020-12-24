@@ -183,6 +183,11 @@ public:
         m_strResponse.reserve(1024);
     }
 
+    static const String kCmdVersion;
+    static const String kCmdBlink;
+    static const String kCmdConfig;
+    static const String kCmdValues;
+
     void update()
     {
     if(Serial.available())
@@ -204,11 +209,11 @@ public:
                 m_strCommand.trim();
                 m_strResponse = "";
 
-                if(m_strCommand.equalsIgnoreCase("version"))
+                if(m_strCommand.equalsIgnoreCase(kCmdVersion))
             {
                     m_strResponse = s_strVersion;
             }
-                else if(m_strCommand.equalsIgnoreCase("blink"))
+                else if(m_strCommand.equalsIgnoreCase(kCmdBlink))
             {
                 // Blink the builtin LED.
                 digitalWrite(LED_BUILTIN, HIGH);
@@ -219,7 +224,7 @@ public:
                 delay(100);
                 digitalWrite(LED_BUILTIN, LOW);
             }
-                else if(m_strCommand.equalsIgnoreCase("config"))
+                else if(m_strCommand.equalsIgnoreCase(kCmdConfig))
             {
                     // Get the configuration of the panels
                     m_strResponse.append(s_panelUp.m_orientation);
@@ -234,7 +239,7 @@ public:
                     // Other config items
                     // m_strResponse.append()
             }
-                else if(m_strCommand.equalsIgnoreCase("v"))
+                else if(m_strCommand.equalsIgnoreCase(kCmdValues))
                 {
                     // Get the raw values and thresholds for each sensor
                     for(auto const &panel : {
@@ -277,6 +282,11 @@ private:
 
     String m_strCommand, m_strResponse;
 };
+
+const String SerialProcessor::kCmdVersion   = "version";
+const String SerialProcessor::kCmdBlink     = "blink";
+const String SerialProcessor::kCmdConfig    = "config";
+const String SerialProcessor::kCmdValues    = "v";
 
 static SerialProcessor s_serialProcessor;
 
