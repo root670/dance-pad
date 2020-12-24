@@ -1,11 +1,5 @@
 #include "Sensor.h"
 
-// Amount above the baseline to trigger a hit.
-uint16_t s_nTriggerThreshold = 100;
-
-// Amount above the baseline to trigger a release.
-float s_nReleaseThreshold = 50;
-
 // Time in milliseconds of inactivity to cause a recalibration.
 uint32_t s_calibrationPeriodMS = 10000; // 10 seconds
 
