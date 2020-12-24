@@ -75,9 +75,6 @@ void setup()
     Joystick.X(512);
     Joystick.Y(512);
     Joystick.Z(512);
-
-    // Initial callibration
-    calibratePanels();
 }
 
 void printSensorValues()
@@ -302,7 +299,7 @@ const uint32_t kLEDUpdateFrequency = 60;
 void loop()
 {
     updatePanels();
-    processSerialData();
+    s_serialProcessor.update();
 
     // Limit frequency of joystick reports
     if(s_timeSinceJoystickUpdate >= kMicrosPerSecond/kJoystickUpdateFrequency)
