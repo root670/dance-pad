@@ -7,19 +7,7 @@
 class Sensor
 {
 public:
-    Sensor(uint8_t nPin)
-    {
-        String strIdentifier("sensor" + nPin);
-
-        m_nPin              = nPin;
-        m_nPressure         = 0;
-        m_nTriggerOffset    = g_config.getUInt16(strIdentifier + "trigger", 50);
-        m_nReleaseOffset    = g_config.getUInt16(strIdentifier + "release", 25);
-        m_nTriggerThreshold = 0;
-        m_nReleaseThreshold = 0;
-        m_nLastChangeTimeMS = 0;
-        m_bPressed          = false;
-    }
+    Sensor(uint8_t nPin);
 
     // Set the thresholds based on the most recent reading
     void calibrate();
@@ -34,8 +22,10 @@ public:
     uint16_t m_nPressure;
     uint16_t m_nTriggerOffset; // Amount above the baseline to trigger a hit.
     uint16_t m_nReleaseOffset; // Amount above the baseline to trigger a release.
-    uint16_t m_nTriggerThreshold;
-    uint16_t m_nReleaseThreshold;
+    String m_strTriggerOffsetSetting; // Config name for trigger offset
+    String m_strReleaseOffsetSetting; // Config name for trigger offset setting
+    uint16_t m_nTriggerThreshold; // Absolute value to trigger a hit.
+    uint16_t m_nReleaseThreshold; // Absolute value to trigger a release.
     uint64_t m_nLastChangeTimeMS;
     bool m_bPressed;
 };
