@@ -9,6 +9,7 @@
 #include <Arduino.h>
 #include <array>
 #include "Panel.h"
+#include "Config.h"
 
 static String s_strVersion;
 static char s_pSextetStream[14]; // Includes newline characteam
