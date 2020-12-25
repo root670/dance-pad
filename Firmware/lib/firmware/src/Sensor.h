@@ -22,6 +22,7 @@ public:
     uint16_t getPressure()const;
     uint16_t getTriggerThreshold()const;
     uint16_t getReleaseThreshold()const;
+    uint8_t getPin()const;
 
 private:
     uint8_t m_nPin;

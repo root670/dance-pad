@@ -277,14 +277,53 @@ private:
     void onCommandGetConfig()
             {
                     // Get the configuration of the panels
+        // Up
                     m_strResponse.append(s_panelUp.m_orientation);
                     m_strResponse.append(',');
+        m_strResponse.append(s_panelUp.getNorthSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelUp.getEastSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelUp.getSouthSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelUp.getWestSensor().getPin());
+        m_strResponse.append(',');
+
+        // Down
                     m_strResponse.append(s_panelDown.m_orientation);
                     m_strResponse.append(',');
+        m_strResponse.append(s_panelDown.getNorthSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelDown.getEastSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelDown.getSouthSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelDown.getWestSensor().getPin());
+        m_strResponse.append(',');
+
+        // Left
                     m_strResponse.append(s_panelLeft.m_orientation);
                     m_strResponse.append(',');
+        m_strResponse.append(s_panelLeft.getNorthSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelLeft.getEastSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelLeft.getSouthSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelLeft.getWestSensor().getPin());
+        m_strResponse.append(',');
+
+        // Right
                     m_strResponse.append(s_panelRight.m_orientation);
                     m_strResponse.append(',');
+        m_strResponse.append(s_panelRight.getNorthSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelRight.getEastSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelRight.getSouthSensor().getPin());
+        m_strResponse.append(',');
+        m_strResponse.append(s_panelRight.getWestSensor().getPin());
+        m_strResponse.append(',');
 
                     // Other config items
         m_strResponse.append(g_config.toString());

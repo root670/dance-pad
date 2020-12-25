@@ -77,3 +77,8 @@ uint16_t Sensor::getReleaseThreshold()const
 {
     return m_nReleaseThreshold;
 }
+
+uint8_t Sensor::getPin()const
+{
+    return m_nPin;
+}
