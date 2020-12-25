@@ -220,6 +220,10 @@ public:
                 {
                     onCommandSetConfig();
                 }
+                else if(m_strCommand.equalsIgnoreCase(kCmdPersist))
+                {
+                    onCommandPersist();
+                }
                 else if(m_strCommand.equalsIgnoreCase(kCmdValues))
                 {
                     onCommandGetValues();
@@ -240,6 +244,7 @@ private:
     static const String kCmdBlink;
     static const String kCmdGetConfig;
     static const String kCmdSetConfig;
+    static const String kCmdPersist;
     static const String kCmdValues;
 
     static const String kConfigTypeStr;
@@ -306,6 +311,12 @@ private:
         }
     }
 
+    // Save configuration items to EEPROM
+    void onCommandPersist()
+    {
+        g_config.write();
+    }
+
                     // Get the raw values and thresholds for each sensor
     void onCommandGetValues()
     {
@@ -343,6 +354,7 @@ const String SerialProcessor::kCmdVersion   = "version";
 const String SerialProcessor::kCmdBlink     = "blink";
 const String SerialProcessor::kCmdGetConfig = "config";
 const String SerialProcessor::kCmdSetConfig = "set";
+const String SerialProcessor::kCmdPersist   = "persist";
 const String SerialProcessor::kCmdValues    = "v";
 
 const String SerialProcessor::kConfigTypeStr    = "str";
