@@ -68,6 +68,8 @@ void setup()
 
     pinMode(LED_BUILTIN, OUTPUT);
 
+    g_config.read();
+
     Serial.begin(9600);
 
     Joystick.useManualSend(true);
