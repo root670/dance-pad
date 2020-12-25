@@ -183,11 +183,6 @@ public:
         m_strResponse.reserve(1024);
     }
 
-    static const String kCmdVersion;
-    static const String kCmdBlink;
-    static const String kCmdConfig;
-    static const String kCmdValues;
-
     void update()
     {
     if(Serial.available())
@@ -211,11 +206,55 @@ public:
 
                 if(m_strCommand.equalsIgnoreCase(kCmdVersion))
             {
-                    m_strResponse = s_strVersion;
+                    onCommandVersion();
             }
                 else if(m_strCommand.equalsIgnoreCase(kCmdBlink))
             {
+                    onCommandBlink();
+                }
+                else if(m_strCommand.equalsIgnoreCase(kCmdGetConfig))
+                {
+                    onCommandGetConfig();
+                }
+                else if(m_strCommand.equalsIgnoreCase(kCmdSetConfig))
+                {
+                    onCommandSetConfig();
+                }
+                else if(m_strCommand.equalsIgnoreCase(kCmdValues))
+                {
+                    onCommandGetValues();
+                }
+                else
+                {
+                    m_strResponse = "Unknown command";
+                }
+
+                Serial.println(m_strResponse);
+            }
+        }
+    }
+
+private:
+
+    static const String kCmdVersion;
+    static const String kCmdBlink;
+    static const String kCmdGetConfig;
+    static const String kCmdSetConfig;
+    static const String kCmdValues;
+
+    static const String kConfigTypeStr;
+    static const String kConfigTypeUInt16;
+    static const String kConfigTypeUInt32;
+
+    // Get the version
+    void onCommandVersion()
+    {
+        m_strResponse = s_strVersion;
+    }
+
                 // Blink the builtin LED.
+    void onCommandBlink()
+    {
                 digitalWrite(LED_BUILTIN, HIGH);
                 delay(100);
                 digitalWrite(LED_BUILTIN, LOW);
@@ -224,7 +263,9 @@ public:
                 delay(100);
                 digitalWrite(LED_BUILTIN, LOW);
             }
-                else if(m_strCommand.equalsIgnoreCase(kCmdConfig))
+
+    // Get configuration values
+    void onCommandGetConfig()
             {
                     // Get the configuration of the panels
                     m_strResponse.append(s_panelUp.m_orientation);
@@ -237,11 +278,37 @@ public:
                     m_strResponse.append(',');
 
                     // Other config items
-                    // m_strResponse.append()
+        m_strResponse.append(g_config.toString());
+    }
+
+    // Set a configuration value. The sender must provide an additional line:
+    // `TYPE KEY=VALUE\n`, where `TYPE` is `str`, `u16`, or `u32`.
+    void onCommandSetConfig()
+    {
+        String strType  = Serial.readStringUntil(' ');
+        String strKey   = Serial.readStringUntil('=');
+        String strValue = Serial.readStringUntil('\n');
+        if(strType.equalsIgnoreCase(kConfigTypeStr))
+        {
+            g_config.setString(strKey, strValue);
+        }
+        else if(strType.equalsIgnoreCase(kConfigTypeUInt16))
+        {
+            g_config.setUInt16(strKey, atoi(strValue.c_str()));
+        }
+        else if(strType.equalsIgnoreCase(kConfigTypeUInt32))
+        {
+            g_config.setUInt32(strKey, atoi(strValue.c_str()));
             }
-                else if(m_strCommand.equalsIgnoreCase(kCmdValues))
+        else
                 {
+            m_strResponse = "Unknown type " + strType;
+        }
+    }
+
                     // Get the raw values and thresholds for each sensor
+    void onCommandGetValues()
+    {
                     for(auto const &panel : {
                         s_panelUp,
                         s_panelDown,
@@ -268,25 +335,19 @@ public:
                     // Remove trailing comma
                     m_strResponse.setCharAt(m_strResponse.length() - 1, '\0');
             }
-            else
-            {
-                    m_strResponse = "Unknown command";
-            }
-
-                Serial.println(m_strResponse);
-        }
-    }
-}
-
-private:
 
     String m_strCommand, m_strResponse;
 };
 
 const String SerialProcessor::kCmdVersion   = "version";
 const String SerialProcessor::kCmdBlink     = "blink";
-const String SerialProcessor::kCmdConfig    = "config";
+const String SerialProcessor::kCmdGetConfig = "config";
+const String SerialProcessor::kCmdSetConfig = "set";
 const String SerialProcessor::kCmdValues    = "v";
+
+const String SerialProcessor::kConfigTypeStr    = "str";
+const String SerialProcessor::kConfigTypeUInt16 = "u16";
+const String SerialProcessor::kConfigTypeUInt32 = "u32";
 
 static SerialProcessor s_serialProcessor;
 
