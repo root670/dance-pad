@@ -31,6 +31,10 @@ public:
     // Write configuration to EEPROM if data is dirty
     void write();
 
+    // Get string representation of configuration items in the form
+    // `KEY1=VALUE1,KEY2=VALUE2,...,KEYN=VALUEN`.
+    String toString()const;
+
 private:
 
     // Write a null-terminated string to the EEPROM at nOffset.

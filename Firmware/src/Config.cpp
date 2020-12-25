@@ -134,3 +134,26 @@ void Configuration::write()
         }
     }
 }
+
+String Configuration::toString()const
+{
+    String strResponse;
+
+    for(auto const &element : m_mapStr)
+    {
+        strResponse.append(element.first + "=" + element.second + ",");
+    }
+    for(auto const &element : m_mapUInt32)
+    {
+        strResponse.append(element.first + "=" + element.second + ",");
+    }
+    for(auto const &element : m_mapUInt32)
+    {
+        strResponse.append(element.first + "=" + element.second + ",");
+    }
+
+    // Remove trailing comma
+    strResponse.setCharAt(strResponse.length() - 1, '\0');
+
+    return strResponse;
+}
