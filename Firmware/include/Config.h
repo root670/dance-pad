@@ -17,6 +17,10 @@ public:
     const String& getString(const String &strKey, const String &strDefault)const;
     void setString(const String &strKey, const String &strValue);
 
+    // 16-bit unsigned integers
+    const uint16_t& getUInt16(const String &strKey, const uint16_t &nDefault)const;
+    void setUInt16(const String &strKey, uint16_t nValue);
+
     // 32-bit unsigned integers
     const uint32_t& getUInt32(const String &strKey, const uint32_t &nDefault)const;
     void setUInt32(const String &strKey, uint32_t nValue);
@@ -58,6 +62,7 @@ private:
 
     bool                        m_bLoaded, m_bDirty;
     std::map<String, String>    m_mapStr;
+    std::map<String, uint16_t>  m_mapUInt16;
     std::map<String, uint32_t>  m_mapUInt32;
 };
 

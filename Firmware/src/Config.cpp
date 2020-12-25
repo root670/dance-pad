@@ -19,6 +19,21 @@ void Configuration::setString(const String &strKey, const String &strValue)
     m_bDirty = true;
 }
 
+const uint16_t& Configuration::getUInt16(const String &strKey, const uint16_t &nDefault)const
+{
+    auto it = m_mapUInt16.find(strKey);
+    if(it == m_mapUInt16.end())
+        return nDefault;
+
+    return it->second;
+}
+
+void Configuration::setUInt16(const String &strKey, uint16_t nValue)
+{
+    m_mapUInt16[strKey] = nValue;
+    m_bDirty = true;
+}
+
 const uint32_t& Configuration::getUInt32(const String &strKey, const uint32_t &nDefault)const
 {
     auto it = m_mapUInt32.find(strKey);
