@@ -255,6 +255,9 @@ private:
     static const String kConfigTypeUInt16;
     static const String kConfigTypeUInt32;
 
+    static const String kResponseSuccess;
+    static const String kResponseFailure;
+
     // Get the version
     void onCommandVersion()
     {
@@ -339,18 +342,21 @@ private:
         if(strType.equalsIgnoreCase(kConfigTypeStr))
         {
             g_config.setString(strKey, strValue);
+            m_strResponse = kResponseSuccess;
         }
         else if(strType.equalsIgnoreCase(kConfigTypeUInt16))
         {
             g_config.setUInt16(strKey, atoi(strValue.c_str()));
+            m_strResponse = kResponseSuccess;
         }
         else if(strType.equalsIgnoreCase(kConfigTypeUInt32))
         {
             g_config.setUInt32(strKey, atoi(strValue.c_str()));
+            m_strResponse = kResponseSuccess;
             }
         else
                 {
-            m_strResponse = "Unknown type " + strType;
+            m_strResponse = kResponseFailure;
         }
     }
 
@@ -399,6 +405,9 @@ const String SerialProcessor::kCmdGetConfig = "config";
 const String SerialProcessor::kCmdSetConfig = "set";
 const String SerialProcessor::kCmdPersist   = "persist";
 const String SerialProcessor::kCmdValues    = "v";
+
+const String SerialProcessor::kResponseSuccess = "!";
+const String SerialProcessor::kResponseFailure = "?";
 
 const String SerialProcessor::kConfigTypeStr    = "str";
 const String SerialProcessor::kConfigTypeUInt16 = "u16";
