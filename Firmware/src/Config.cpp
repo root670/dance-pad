@@ -10,6 +10,7 @@ const String& Configuration::getString(const String &strKey, const String &strDe
     if(it == m_mapStr.end())
     {
         m_mapStr[strKey] = strDefault;
+        m_bDirty = true;
     }
     
     return it->second;
@@ -27,6 +28,7 @@ const uint16_t& Configuration::getUInt16(const String &strKey, const uint16_t &n
     if(it == m_mapUInt16.end())
     {
         m_mapUInt16[strKey] = nDefault;
+        m_bDirty = true;
     }
 
     return it->second;
@@ -44,6 +46,7 @@ const uint32_t& Configuration::getUInt32(const String &strKey, const uint32_t &n
     if(it == m_mapUInt32.end())
     {
         m_mapUInt32[strKey] = nDefault;
+        m_bDirty = true;
     }
 
     return it->second;
@@ -138,6 +141,8 @@ void Configuration::write()
             nOffset = put(nOffset, element.first);
             nOffset = put(nOffset, element.second);
         }
+
+        m_bDirty = true;
     }
 }
 
