@@ -60,7 +60,9 @@ private:
     int get(int nOffset, TYPE &nValue)const
     {
         EEPROM.get(nOffset, nValue);
-        Serial.printf("get: %08X\n", nValue);
+        Serial.print("get: ");
+        Serial.print(static_cast<unsigned int>(nValue), 16);
+        Serial.println();
         return nOffset + sizeof(nValue);
     }
 

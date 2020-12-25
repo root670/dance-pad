@@ -77,7 +77,9 @@ int Configuration::get(int nOffset, String &str)const
         str += c;
     }
 
-    Serial.printf("get[str]: %s\n", str.c_str());
+    Serial.print("get[str]: ");
+    Serial.print(str);
+    Serial.println();
     
     return nOffset;
 }
