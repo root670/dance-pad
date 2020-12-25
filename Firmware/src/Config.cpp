@@ -4,11 +4,13 @@
 Configuration g_config;
 static const uint32_t kSentinelValue = 0x5AFEC0DE;
 
-const String& Configuration::getString(const String &strKey, const String &strDefault)const
+const String& Configuration::getString(const String &strKey, const String &strDefault)
 {
     auto it = m_mapStr.find(strKey);
     if(it == m_mapStr.end())
-        return strDefault;
+    {
+        m_mapStr[strKey] = strDefault;
+    }
     
     return it->second;
 }
@@ -19,11 +21,13 @@ void Configuration::setString(const String &strKey, const String &strValue)
     m_bDirty = true;
 }
 
-const uint16_t& Configuration::getUInt16(const String &strKey, const uint16_t &nDefault)const
+const uint16_t& Configuration::getUInt16(const String &strKey, const uint16_t &nDefault)
 {
     auto it = m_mapUInt16.find(strKey);
     if(it == m_mapUInt16.end())
-        return nDefault;
+    {
+        m_mapUInt16[strKey] = nDefault;
+    }
 
     return it->second;
 }
@@ -34,11 +38,13 @@ void Configuration::setUInt16(const String &strKey, uint16_t nValue)
     m_bDirty = true;
 }
 
-const uint32_t& Configuration::getUInt32(const String &strKey, const uint32_t &nDefault)const
+const uint32_t& Configuration::getUInt32(const String &strKey, const uint32_t &nDefault)
 {
     auto it = m_mapUInt32.find(strKey);
     if(it == m_mapUInt32.end())
-        return nDefault;
+    {
+        m_mapUInt32[strKey] = nDefault;
+    }
 
     return it->second;
 }
