@@ -233,6 +233,7 @@ public:
                     m_strResponse = "Unknown command";
                 }
 
+                if(m_strResponse.length() > 0)
                 Serial.println(m_strResponse);
             }
         }
