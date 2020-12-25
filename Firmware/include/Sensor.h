@@ -18,6 +18,12 @@ public:
     // Update state of the sensor
     void update();
 
+    bool isPressed()const;
+    uint16_t getPressure()const;
+    uint16_t getTriggerThreshold()const;
+    uint16_t getReleaseThreshold()const;
+
+private:
     uint8_t m_nPin;
     uint16_t m_nPressure;
     uint16_t m_nTriggerOffset; // Amount above the baseline to trigger a hit.

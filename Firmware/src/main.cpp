@@ -335,11 +335,11 @@ private:
                             panel.getWestSensor()
                         })
             {
-                            m_strResponse.append(sensor.m_nPressure);
+                m_strResponse.append(sensor.getPressure());
                             m_strResponse.append(',');
-                            m_strResponse.append(sensor.m_nTriggerThreshold);
+                m_strResponse.append(sensor.getTriggerThreshold());
                             m_strResponse.append(',');
-                            m_strResponse.append(sensor.m_nReleaseThreshold);
+                m_strResponse.append(sensor.getReleaseThreshold());
                             m_strResponse.append(',');
                         }
                     }

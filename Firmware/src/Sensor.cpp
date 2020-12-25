@@ -57,3 +57,23 @@ void Sensor::update()
         m_nLastChangeTimeMS = nCurrentTimeMS;
     }
 }
+
+bool Sensor::isPressed()const
+{
+    return m_bPressed;
+}
+
+uint16_t Sensor::getPressure()const
+{
+    return m_nPressure;
+}
+
+uint16_t Sensor::getTriggerThreshold()const
+{
+    return m_nTriggerThreshold;
+}
+
+uint16_t Sensor::getReleaseThreshold()const
+{
+    return m_nReleaseThreshold;
+}

@@ -22,10 +22,10 @@ void Panel::calibrate()
 
 bool Panel::isPressed()const
 {
-    return m_sensorN.m_bPressed ||
-           m_sensorE.m_bPressed ||
-           m_sensorS.m_bPressed ||
-           m_sensorW.m_bPressed;
+    return m_sensorN.isPressed() ||
+           m_sensorE.isPressed() ||
+           m_sensorS.isPressed() ||
+           m_sensorW.isPressed();
 }
 
 // Get the north sensor corrected for the Arrow Panel PCB's orientation
