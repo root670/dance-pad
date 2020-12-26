@@ -7,7 +7,7 @@ from serial import Serial
 
 from base.communicator import Communicator, PanelOrientation
 
-from .stubs import PANEL_CONFIG_RESPONSE, SENSOR_VALUES_RESPONSE
+from .stubs import GET_CONFIG_RESPONSE, SENSOR_VALUES_RESPONSE
 
 class TestPanelConfiguration:
 
@@ -45,10 +45,10 @@ class TestCommunicator:
         self.mock_serial.write.assert_called_once()
         self.mock_serial.readline.assert_not_called()
 
-    def test_get_panel_config(self, setup):
-        self.mock_serial.readline.return_value = PANEL_CONFIG_RESPONSE
+    def test_get_config(self, setup):
+        self.mock_serial.readline.return_value = GET_CONFIG_RESPONSE
 
-        self.communicator.get_panel_config()
+        self.communicator.get_config()
 
         self.mock_serial.write.assert_called_once()
         self.mock_serial.readline.assert_called_once()

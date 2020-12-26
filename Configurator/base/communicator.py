@@ -44,10 +44,6 @@ class Communicator:
 
     RESPONSE_SUCCESS = '!'
     RESPONSE_FAILURE = '?'
-    RESPONSES = set({
-        Communicator.RESPONSE_SUCCESS,
-        Communicator.RESPONSE_FAILURE
-    })
 
     def __init__(
         self,
@@ -96,7 +92,10 @@ class Communicator:
         self.__send_line(f'u16 {key}={value}')
         response = self.__get_line()
 
-        if response == self.RESPONSES:
+        if not response in {
+            Communicator.RESPONSE_SUCCESS,
+            Communicator.RESPONSE_FAILURE
+        }:
             raise ValueError(f'Unexpected response: {response}')
 
         return response == self.RESPONSE_SUCCESS
