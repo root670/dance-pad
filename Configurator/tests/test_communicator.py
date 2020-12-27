@@ -53,6 +53,22 @@ class TestCommunicator:
         self.mock_serial.write.assert_called_once()
         self.mock_serial.readline.assert_called_once()
 
+    def test_set_thresholds(self, setup):
+        self.mock_serial.readline.return_value = Communicator.RESPONSE_SUCCESS.encode('ascii')
+
+        self.communicator.set_thresholds(1, 500, 400)
+
+        assert self.mock_serial.write.call_count == 4
+        assert self.mock_serial.readline.call_count == 2
+
+    def test_set_thresholds_with_wrong_values(self, setup):
+        with pytest.raises(ValueError):
+            self.communicator.set_thresholds(1, 10000, 100)
+            self.communicator.set_thresholds(1, 10000, 5000)
+            self.communicator.set_thresholds(1, 0, -1)
+            self.communicator.set_thresholds(1, -1, -2)
+            self.communicator.set_thresholds(1, 600, 601)
+
     def test_get_sensor_values(self, setup):
         self.mock_serial.readline.return_value = SENSOR_VALUES_RESPONSE
 
