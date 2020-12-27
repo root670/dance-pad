@@ -36,7 +36,7 @@ class Dialog(QDialog):
             self.comboBoxDevices.addItem(f'{index}: {port.device}')
 
         # Setup plots
-        self.data_sensors = [np.zeros(250)] * 16
+        self.data_sensors = [np.zeros(250, dtype=np.int16)] * 16
 
         self.curves_up = [
             self.plot_up.plot(self.data_sensors[0], pen=pg.mkPen('r', width=3)),
@@ -95,12 +95,10 @@ class Dialog(QDialog):
         print(1000 / ((x - self.time)/1e6))
         self.time = x
 
-        v = math.sin((3.14159/90) * self.x)
-
         # Update data for curves
         for idx in range(len(self.data_sensors)):
             self.data_sensors[idx] = np.roll(self.data_sensors[idx], -1)
-            self.data_sensors[idx][-1] = math.sin((3.14159/(90 * (idx + 1))) * self.x)
+            self.data_sensors[idx][-1] = max(int(math.sin((3.14159/(90 * (idx + 1))) * self.x) * 1023), 0)
 
         # Update curves
         y = 0
