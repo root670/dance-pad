@@ -7,7 +7,7 @@ import os
 
 from PyQt5 import uic
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QApplication, QDialog
+from PyQt5.QtWidgets import QApplication, QDialog, QTableWidgetItem
 import numpy as np
 import pyqtgraph as pg
 import qdarkstyle
@@ -36,18 +36,32 @@ class Dialog(QDialog):
             self.comboBoxDevices.addItem(f'{index}: {port.device}')
 
         # Setup plots
-        self.data_up = np.zeros(250)
-        self.data_down = np.zeros(250)
-        self.data_left = np.zeros(250)
-        self.data_right = np.zeros(250)
-        self.curve_up = self.plot_up.plot(
-            self.data_up, pen=pg.mkPen('r', width=2))
-        self.curve_down = self.plot_down.plot(
-            self.data_down, pen=pg.mkPen('g', width=2))
-        self.curve_left = self.plot_left.plot(
-            self.data_left, pen=pg.mkPen('w', width=2))
-        self.curve_right = self.plot_right.plot(
-            self.data_right, pen=pg.mkPen('y', width=2))
+        self.data_sensors = [np.zeros(250)] * 16
+
+        self.curves_up = [
+            self.plot_up.plot(self.data_sensors[0], pen=pg.mkPen('r', width=3)),
+            self.plot_up.plot(self.data_sensors[1], pen=pg.mkPen('g', width=3)),
+            self.plot_up.plot(self.data_sensors[2], pen=pg.mkPen('w', width=3)),
+            self.plot_up.plot(self.data_sensors[3], pen=pg.mkPen('y', width=3)),
+        ]
+        self.curves_down = [
+            self.plot_down.plot(self.data_sensors[4], pen=pg.mkPen('r', width=3)),
+            self.plot_down.plot(self.data_sensors[5], pen=pg.mkPen('g', width=3)),
+            self.plot_down.plot(self.data_sensors[6], pen=pg.mkPen('w', width=3)),
+            self.plot_down.plot(self.data_sensors[7], pen=pg.mkPen('y', width=3)),
+        ]
+        self.curves_left = [
+            self.plot_left.plot(self.data_sensors[8], pen=pg.mkPen('r', width=3)),
+            self.plot_left.plot(self.data_sensors[9], pen=pg.mkPen('g', width=3)),
+            self.plot_left.plot(self.data_sensors[10], pen=pg.mkPen('w', width=3)),
+            self.plot_left.plot(self.data_sensors[11], pen=pg.mkPen('y', width=3)),
+        ]
+        self.curves_right = [
+            self.plot_right.plot(self.data_sensors[12], pen=pg.mkPen('r', width=3)),
+            self.plot_right.plot(self.data_sensors[13], pen=pg.mkPen('g', width=3)),
+            self.plot_right.plot(self.data_sensors[14], pen=pg.mkPen('w', width=3)),
+            self.plot_right.plot(self.data_sensors[15], pen=pg.mkPen('y', width=3)),
+        ]
 
         self.x = 0
 
@@ -61,6 +75,12 @@ class Dialog(QDialog):
             plot.getAxis('left').showLabel(False)
 
         self.time = time.time_ns()
+
+        # Setup table
+        for row in range(16):
+            self.tableThresholds.setItem(row, 0, QTableWidgetItem('A0'))
+            self.tableThresholds.setItem(row, 1, QTableWidgetItem('500'))
+            self.tableThresholds.setItem(row, 2, QTableWidgetItem('400'))
 
         # Call the update function periodically
         timer = QTimer(self)
@@ -78,20 +98,16 @@ class Dialog(QDialog):
         v = math.sin((3.14159/90) * self.x)
 
         # Update data for curves
-        self.data_up = np.roll(self.data_up, -1)
-        self.data_up[-1] = v
-        self.data_down = np.roll(self.data_down, -1)
-        self.data_down[-1] = v
-        self.data_left = np.roll(self.data_left, -1)
-        self.data_left[-1] = v
-        self.data_right = np.roll(self.data_right, -1)
-        self.data_right[-1] = v
+        for idx in range(len(self.data_sensors)):
+            self.data_sensors[idx] = np.roll(self.data_sensors[idx], -1)
+            self.data_sensors[idx][-1] = math.sin((3.14159/(90 * (idx + 1))) * self.x)
 
         # Update curves
-        self.curve_up.setData(self.data_up)
-        self.curve_down.setData(self.data_down)
-        self.curve_left.setData(self.data_left)
-        self.curve_right.setData(self.data_right)
+        y = 0
+        for direction in [self.curves_up, self.curves_down, self.curves_left, self.curves_right]:
+            for sensor in direction:
+                sensor.setData(self.data_sensors[y])
+                y += 1
 
         self.x += 1
 
