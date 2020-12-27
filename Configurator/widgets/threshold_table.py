@@ -1,0 +1,20 @@
+from PyQt5.QtWidgets import QTableWidget, QMessageBox
+from PyQt5 import Qt
+
+class ThresholdTable(QTableWidget):
+    def __init__(self, parent=None):
+        super(ThresholdTable, self).__init__(parent)
+
+    def keyPressEvent(self, event):
+        key = event.key()
+
+        if key == 16777220:
+            if self.currentColumn() == 0:
+                return # Ignore the Pin column
+
+            cur = self.currentItem()
+            font = cur.font()
+            font.setBold(True)
+            cur.setFont(font)
+        else:
+            super(ThresholdTable, self).keyPressEvent(event)
