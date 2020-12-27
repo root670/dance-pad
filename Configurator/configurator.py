@@ -78,7 +78,8 @@ class Dialog(QDialog):
 
         # Setup table
         for row in range(16):
-            self.tableThresholds.setItem(row, 0, QTableWidgetItem('A0'))
+            self.tableThresholds.setItem(row, 0, QTableWidgetItem(str(row)))
+            self.tableThresholds.setItem(row, 0, QTableWidgetItem('-'))
             self.tableThresholds.setItem(row, 1, QTableWidgetItem('500'))
             self.tableThresholds.setItem(row, 2, QTableWidgetItem('400'))
 
@@ -104,6 +105,7 @@ class Dialog(QDialog):
         y = 0
         for direction in [self.curves_up, self.curves_down, self.curves_left, self.curves_right]:
             for sensor in direction:
+                self.tableThresholds.item(y, 1).setText(str(self.data_sensors[y][-1]))
                 sensor.setData(self.data_sensors[y])
                 y += 1
 
