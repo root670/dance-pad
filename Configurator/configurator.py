@@ -29,6 +29,8 @@ class Dialog(QDialog):
         # Setup the user interface from Designer.
         uic.loadUi(self.UI_FILE, self)
 
+        self.comm = None
+
         self.serial_ports = list_ports.comports()
         self.comboBoxDevices.activated.connect(self.on_device_changed)
         self.comboBoxDevices.addItem('Devices')
@@ -91,6 +93,9 @@ class Dialog(QDialog):
     def update_plots(self):
         """Plot the current sensor values."""
 
+        if self.comm is None:
+            return
+
         # Compute FPS
         x = time.time_ns()
         print(1000 / ((x - self.time)/1e6))
@@ -99,7 +104,24 @@ class Dialog(QDialog):
         # Update data for curves
         for idx in range(len(self.data_sensors)):
             self.data_sensors[idx] = np.roll(self.data_sensors[idx], -1)
-            self.data_sensors[idx][-1] = max(int(math.sin((3.14159/(90 * (idx + 1))) * self.x) * 1023), 0)
+
+        values = self.comm.get_sensor_values()
+        self.data_sensors[0][-1] = values['up']['north']['value']
+        self.data_sensors[1][-1] = values['up']['east']['value']
+        self.data_sensors[2][-1] = values['up']['south']['value']
+        self.data_sensors[3][-1] = values['up']['west']['value']
+        self.data_sensors[4][-1] = values['down']['north']['value']
+        self.data_sensors[5][-1] = values['down']['east']['value']
+        self.data_sensors[6][-1] = values['down']['south']['value']
+        self.data_sensors[7][-1] = values['down']['west']['value']
+        self.data_sensors[8][-1] = values['left']['north']['value']
+        self.data_sensors[9][-1] = values['left']['east']['value']
+        self.data_sensors[10][-1] = values['left']['south']['value']
+        self.data_sensors[11][-1] = values['left']['west']['value']
+        self.data_sensors[12][-1] = values['right']['north']['value']
+        self.data_sensors[13][-1] = values['right']['east']['value']
+        self.data_sensors[14][-1] = values['right']['south']['value']
+        self.data_sensors[15][-1] = values['right']['west']['value']
 
         # Update curves
         y = 0
@@ -125,6 +147,24 @@ class Dialog(QDialog):
         )
 
         device_info = self.comm.get_version()
+        config = self.comm.get_config()
+
+        self.tableThresholds.item(0,0).setText(str(config['up']['north_pin']))
+        self.tableThresholds.item(1,0).setText(str(config['up']['east_pin']))
+        self.tableThresholds.item(2,0).setText(str(config['up']['south_pin']))
+        self.tableThresholds.item(3,0).setText(str(config['up']['west_pin']))
+        self.tableThresholds.item(4,0).setText(str(config['down']['north_pin']))
+        self.tableThresholds.item(5,0).setText(str(config['down']['east_pin']))
+        self.tableThresholds.item(6,0).setText(str(config['down']['south_pin']))
+        self.tableThresholds.item(7,0).setText(str(config['down']['west_pin']))
+        self.tableThresholds.item(8,0).setText(str(config['left']['north_pin']))
+        self.tableThresholds.item(9,0).setText(str(config['left']['east_pin']))
+        self.tableThresholds.item(10,0).setText(str(config['left']['south_pin']))
+        self.tableThresholds.item(11,0).setText(str(config['left']['west_pin']))
+        self.tableThresholds.item(12,0).setText(str(config['right']['north_pin']))
+        self.tableThresholds.item(13,0).setText(str(config['right']['east_pin']))
+        self.tableThresholds.item(14,0).setText(str(config['right']['south_pin']))
+        self.tableThresholds.item(15,0).setText(str(config['right']['west_pin']))
 
         self.labelDeviceInfo.setText(f'Connected to {device}.\n\n{device_info}')
 
