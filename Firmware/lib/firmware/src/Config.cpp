@@ -1,8 +1,16 @@
 #include "Config.h"
 #include <EEPROM.h>
 
-Configuration g_config;
+Configuration* Configuration::m_inst = NULL;
+
 static const uint32_t kSentinelValue = 0x5AFEC0DE;
+
+Configuration* Configuration::getInstance()
+{
+    if(!m_inst)
+        m_inst = new Configuration();
+    return m_inst;
+}
 
 const String& Configuration::getString(const String &strKey, const String &strDefault)
 {
@@ -11,6 +19,7 @@ const String& Configuration::getString(const String &strKey, const String &strDe
     {
         m_mapStr[strKey] = strDefault;
         m_bDirty = true;
+        return strDefault;
     }
     
     return it->second;
@@ -29,6 +38,7 @@ const uint16_t& Configuration::getUInt16(const String &strKey, const uint16_t &n
     {
         m_mapUInt16[strKey] = nDefault;
         m_bDirty = true;
+        return nDefault;
     }
 
     return it->second;
@@ -156,7 +166,7 @@ String Configuration::toString()const
     {
         strResponse.append(element.first + "=" + element.second + ",");
     }
-    for(auto const &element : m_mapUInt32)
+    for(auto const &element : m_mapUInt16)
     {
         strResponse.append(element.first + "=" + element.second + ",");
     }

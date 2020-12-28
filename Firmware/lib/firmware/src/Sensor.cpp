@@ -8,14 +8,15 @@ static uint32_t s_calibrationPeriodMS = 10000; // 10 seconds
 
 Sensor::Sensor(uint8_t nPin)
 {
-    String strIdentifier("sensor" + nPin);
+    String strIdentifier("sensor");
+    strIdentifier.append(nPin);
 
     m_nPin              = nPin;
     m_nPressure         = 0;
     m_strTriggerOffsetSetting = strIdentifier + "trigger";
     m_strReleaseOffsetSetting = strIdentifier + "release";
-    m_nTriggerOffset    = g_config.getUInt16(m_strTriggerOffsetSetting, kDefaultTriggerOffset);
-    m_nReleaseOffset    = g_config.getUInt16(m_strTriggerOffsetSetting, kDefaultReleaseOffset);
+    m_nTriggerOffset    = Configuration::getInstance()->getUInt16(m_strTriggerOffsetSetting, kDefaultTriggerOffset);
+    m_nReleaseOffset    = Configuration::getInstance()->getUInt16(m_strReleaseOffsetSetting, kDefaultReleaseOffset);
     m_nTriggerThreshold = 0;
     m_nReleaseThreshold = 0;
     m_nLastChangeTimeMS = 0;
@@ -24,8 +25,8 @@ Sensor::Sensor(uint8_t nPin)
 
 void Sensor::calibrate()
 {
-    m_nTriggerThreshold = m_nPressure + g_config.getUInt16(m_strTriggerOffsetSetting, 50);
-    m_nReleaseThreshold = m_nPressure + g_config.getUInt16(m_strReleaseOffsetSetting, 25);
+    m_nTriggerThreshold = m_nPressure + Configuration::getInstance()->getUInt16(m_strTriggerOffsetSetting, 50);
+    m_nReleaseThreshold = m_nPressure + Configuration::getInstance()->getUInt16(m_strReleaseOffsetSetting, 25);
 }
 
 void Sensor::readSensor()

@@ -69,7 +69,7 @@ void setup()
 
     pinMode(LED_BUILTIN, OUTPUT);
 
-    g_config.read();
+    Configuration::getInstance()->read();
 
     Serial.begin(9600);
 
@@ -329,7 +329,10 @@ private:
         m_strResponse.append(',');
 
                     // Other config items
-        m_strResponse.append(g_config.toString());
+        m_strResponse.append(Configuration::getInstance()->toString());
+
+        if(m_strResponse[m_strResponse.length() - 1] == ',')
+            m_strResponse[m_strResponse.length() - 1] = '\0';
     }
 
     // Set a configuration value. The sender must provide an additional line:
@@ -341,17 +344,17 @@ private:
         String strValue = Serial.readStringUntil('\n');
         if(strType.equalsIgnoreCase(kConfigTypeStr))
         {
-            g_config.setString(strKey, strValue);
+            Configuration::getInstance()->setString(strKey, strValue);
             m_strResponse = kResponseSuccess;
         }
         else if(strType.equalsIgnoreCase(kConfigTypeUInt16))
         {
-            g_config.setUInt16(strKey, atoi(strValue.c_str()));
+            Configuration::getInstance()->setUInt16(strKey, atoi(strValue.c_str()));
             m_strResponse = kResponseSuccess;
         }
         else if(strType.equalsIgnoreCase(kConfigTypeUInt32))
         {
-            g_config.setUInt32(strKey, atoi(strValue.c_str()));
+            Configuration::getInstance()->setUInt32(strKey, atoi(strValue.c_str()));
             m_strResponse = kResponseSuccess;
             }
         else
@@ -363,7 +366,7 @@ private:
     // Save configuration items to EEPROM
     void onCommandPersist()
     {
-        g_config.write();
+       Configuration::getInstance()->write();
     }
 
                     // Get the raw values and thresholds for each sensor
@@ -393,7 +396,7 @@ private:
                     }
 
                     // Remove trailing comma
-                    m_strResponse.setCharAt(m_strResponse.length() - 1, '\0');
+        m_strResponse.remove(m_strResponse.length() - 1);
             }
 
     String m_strCommand, m_strResponse;

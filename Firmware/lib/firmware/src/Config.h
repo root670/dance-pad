@@ -9,9 +9,9 @@
 class Configuration
 {
 public:
-    Configuration()
-        : m_bLoaded(false), m_bDirty(false)
-    {};
+
+    // Get singleton instance
+    static Configuration* getInstance();
 
     // Strings
     const String& getString(const String &strKey, const String &strDefault);
@@ -36,6 +36,12 @@ public:
     String toString()const;
 
 private:
+
+    static Configuration *m_inst;
+
+    Configuration()
+        : m_bLoaded(false), m_bDirty(false)
+    {};
 
     // Write a null-terminated string to the EEPROM at nOffset.
     // Returns offset immediately after the null-terminator.
@@ -72,4 +78,4 @@ private:
     std::map<String, uint32_t>  m_mapUInt32;
 };
 
-extern Configuration g_config;
+// extern Configuration g_config;
