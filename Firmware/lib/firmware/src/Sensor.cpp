@@ -1,7 +1,7 @@
 #include "Sensor.h"
 
-static const uint16_t kDefaultTriggerOffset = 50;
-static const uint16_t kDefaultReleaseOffset = 25;
+static const uint16_t kDefaultTriggerOffset = 100;
+static const uint16_t kDefaultReleaseOffset = 50;
 
 // Time in milliseconds of inactivity to cause a recalibration.
 static uint32_t s_calibrationPeriodMS = 10000; // 10 seconds
@@ -25,8 +25,8 @@ Sensor::Sensor(uint8_t nPin)
 
 void Sensor::calibrate()
 {
-    m_nTriggerThreshold = m_nPressure + Configuration::getInstance()->getUInt16(m_strTriggerOffsetSetting, 50);
-    m_nReleaseThreshold = m_nPressure + Configuration::getInstance()->getUInt16(m_strReleaseOffsetSetting, 25);
+    m_nTriggerThreshold = m_nPressure + Configuration::getInstance()->getUInt16(m_strTriggerOffsetSetting, kDefaultTriggerOffset);
+    m_nReleaseThreshold = m_nPressure + Configuration::getInstance()->getUInt16(m_strReleaseOffsetSetting, kDefaultReleaseOffset);
 }
 
 void Sensor::readSensor()
