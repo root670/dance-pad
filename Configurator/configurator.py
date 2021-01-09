@@ -81,9 +81,9 @@ class Dialog(QDialog):
         # Setup table
         for row in range(16):
             self.tableThresholds.setItem(row, 0, QTableWidgetItem(str(row)))
-            self.tableThresholds.setItem(row, 0, QTableWidgetItem('-'))
-            self.tableThresholds.setItem(row, 1, QTableWidgetItem('500'))
-            self.tableThresholds.setItem(row, 2, QTableWidgetItem('400'))
+            self.tableThresholds.setItem(row, 1, QTableWidgetItem('-'))
+            self.tableThresholds.setItem(row, 2, QTableWidgetItem('-'))
+            self.tableThresholds.setItem(row, 3, QTableWidgetItem('-'))
 
         # Call the update function periodically
         timer = QTimer(self)
@@ -106,22 +106,55 @@ class Dialog(QDialog):
             self.data_sensors[idx] = np.roll(self.data_sensors[idx], -1)
 
         values = self.comm.get_sensor_values()
+        # print(values)
         self.data_sensors[0][-1] = values['up']['north']['value']
+        self.tableThresholds.setItem(0, 2, QTableWidgetItem(str(values['up']['north']['trigger_threshold'])))
+        self.tableThresholds.setItem(0, 3, QTableWidgetItem(str(values['up']['north']['release_threshold'])))
         self.data_sensors[1][-1] = values['up']['east']['value']
+        self.tableThresholds.setItem(1, 2, QTableWidgetItem(str(values['up']['east']['trigger_threshold'])))
+        self.tableThresholds.setItem(1, 3, QTableWidgetItem(str(values['up']['east']['release_threshold'])))
         self.data_sensors[2][-1] = values['up']['south']['value']
+        self.tableThresholds.setItem(2, 2, QTableWidgetItem(str(values['up']['south']['trigger_threshold'])))
+        self.tableThresholds.setItem(2, 3, QTableWidgetItem(str(values['up']['south']['release_threshold'])))
         self.data_sensors[3][-1] = values['up']['west']['value']
+        self.tableThresholds.setItem(3, 2, QTableWidgetItem(str(values['up']['west']['trigger_threshold'])))
+        self.tableThresholds.setItem(3, 3, QTableWidgetItem(str(values['up']['west']['release_threshold'])))
         self.data_sensors[4][-1] = values['down']['north']['value']
+        self.tableThresholds.setItem(4, 2, QTableWidgetItem(str(values['up']['north']['trigger_threshold'])))
+        self.tableThresholds.setItem(4, 3, QTableWidgetItem(str(values['up']['north']['release_threshold'])))
         self.data_sensors[5][-1] = values['down']['east']['value']
+        self.tableThresholds.setItem(5, 2, QTableWidgetItem(str(values['up']['east']['trigger_threshold'])))
+        self.tableThresholds.setItem(5, 3, QTableWidgetItem(str(values['up']['east']['release_threshold'])))
         self.data_sensors[6][-1] = values['down']['south']['value']
+        self.tableThresholds.setItem(6, 2, QTableWidgetItem(str(values['up']['south']['trigger_threshold'])))
+        self.tableThresholds.setItem(6, 3, QTableWidgetItem(str(values['up']['south']['release_threshold'])))
         self.data_sensors[7][-1] = values['down']['west']['value']
+        self.tableThresholds.setItem(7, 2, QTableWidgetItem(str(values['up']['west']['trigger_threshold'])))
+        self.tableThresholds.setItem(7, 3, QTableWidgetItem(str(values['up']['west']['release_threshold'])))
         self.data_sensors[8][-1] = values['left']['north']['value']
+        self.tableThresholds.setItem(8, 2, QTableWidgetItem(str(values['up']['north']['trigger_threshold'])))
+        self.tableThresholds.setItem(8, 3, QTableWidgetItem(str(values['up']['north']['release_threshold'])))
         self.data_sensors[9][-1] = values['left']['east']['value']
+        self.tableThresholds.setItem(9, 2, QTableWidgetItem(str(values['up']['east']['trigger_threshold'])))
+        self.tableThresholds.setItem(9, 3, QTableWidgetItem(str(values['up']['east']['release_threshold'])))
         self.data_sensors[10][-1] = values['left']['south']['value']
+        self.tableThresholds.setItem(10, 2, QTableWidgetItem(str(values['up']['south']['trigger_threshold'])))
+        self.tableThresholds.setItem(10, 3, QTableWidgetItem(str(values['up']['south']['release_threshold'])))
         self.data_sensors[11][-1] = values['left']['west']['value']
+        self.tableThresholds.setItem(11, 2, QTableWidgetItem(str(values['up']['west']['trigger_threshold'])))
+        self.tableThresholds.setItem(11, 3, QTableWidgetItem(str(values['up']['west']['release_threshold'])))
         self.data_sensors[12][-1] = values['right']['north']['value']
+        self.tableThresholds.setItem(12, 2, QTableWidgetItem(str(values['up']['north']['trigger_threshold'])))
+        self.tableThresholds.setItem(12, 3, QTableWidgetItem(str(values['up']['north']['release_threshold'])))
         self.data_sensors[13][-1] = values['right']['east']['value']
+        self.tableThresholds.setItem(13, 2, QTableWidgetItem(str(values['up']['east']['trigger_threshold'])))
+        self.tableThresholds.setItem(13, 3, QTableWidgetItem(str(values['up']['east']['release_threshold'])))
         self.data_sensors[14][-1] = values['right']['south']['value']
+        self.tableThresholds.setItem(14, 2, QTableWidgetItem(str(values['up']['south']['trigger_threshold'])))
+        self.tableThresholds.setItem(14, 3, QTableWidgetItem(str(values['up']['south']['release_threshold'])))
         self.data_sensors[15][-1] = values['right']['west']['value']
+        self.tableThresholds.setItem(15, 2, QTableWidgetItem(str(values['up']['west']['trigger_threshold'])))
+        self.tableThresholds.setItem(15, 3, QTableWidgetItem(str(values['up']['west']['release_threshold'])))
 
         # Update curves
         y = 0
