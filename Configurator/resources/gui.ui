@@ -12,7 +12,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
+    <width>942</width>
     <height>600</height>
    </rect>
   </property>
@@ -54,7 +54,7 @@
     <rect>
      <x>680</x>
      <y>10</y>
-     <width>211</width>
+     <width>251</width>
      <height>26</height>
     </rect>
    </property>
@@ -64,8 +64,8 @@
     <rect>
      <x>680</x>
      <y>40</y>
-     <width>211</width>
-     <height>151</height>
+     <width>251</width>
+     <height>71</height>
     </rect>
    </property>
    <property name="text">
@@ -79,9 +79,9 @@
    <property name="geometry">
     <rect>
      <x>680</x>
-     <y>190</y>
-     <width>211</width>
-     <height>192</height>
+     <y>110</y>
+     <width>251</width>
+     <height>401</height>
     </rect>
    </property>
    <property name="rowCount">
@@ -146,13 +146,26 @@
    <property name="geometry">
     <rect>
      <x>680</x>
-     <y>380</y>
-     <width>211</width>
+     <y>520</y>
+     <width>251</width>
      <height>32</height>
     </rect>
    </property>
    <property name="text">
     <string>Save Thresholds</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_reset">
+   <property name="geometry">
+    <rect>
+     <x>850</x>
+     <y>560</y>
+     <width>81</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Reset</string>
    </property>
   </widget>
  </widget>

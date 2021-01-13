@@ -37,6 +37,8 @@ class Dialog(QDialog):
         for index, port in enumerate(self.serial_ports):
             self.comboBoxDevices.addItem(f'{index}: {port.device}')
 
+        self.pushButton_reset.clicked.connect(self.on_reset_clicked)
+
         # Setup plots
         self.data_sensors = [np.zeros(250, dtype=np.int16)] * 16
 

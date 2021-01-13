@@ -41,6 +41,7 @@ class Communicator:
     COMMAND_SETCONFIG = 'set'
     COMMAND_PERSIST = 'persist'
     COMMAND_VALUES = 'v'
+    COMMAND_CALIBRATE = 'calibrate'
 
     RESPONSE_SUCCESS = '!'
     RESPONSE_FAILURE = '?'
@@ -110,6 +111,11 @@ class Communicator:
         """Blink the on-board LED on the Teensy board.
         """
         self.__send_command(self.COMMAND_BLINK)
+
+    def calibrate(self) -> None:
+        """Force calibration of the sensors.
+        """
+        self.__send_command(self.COMMAND_CALIBRATE)
 
     def set_thresholds(self, pin: int, trigger: int, release:int) -> bool:
         """Set the tresholds for a sensor.
