@@ -101,7 +101,7 @@ class Dialog(QDialog):
 
         # Compute FPS
         x = time.time_ns()
-        print(1000 / ((x - self.time)/1e6))
+        # print(1000 / ((x - self.time)/1e6))
         self.time = x
 
         # Update data for curves
