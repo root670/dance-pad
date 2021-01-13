@@ -3,12 +3,27 @@
 //
 #pragma once
 #include <cstdint>
+#include <FastLED.h>
 
-// Wrapper around FastLED for each a single network of RGB LEDs oriented
-// in a grid pattern.
-class RGBLights
+typedef enum lightIdentifier
 {
-public:
-    RGBLights(int nDataPin = -1, int nNumLEDs = 25, int nMaxBrightness = 64) {};
-    void setSingle(int row, int col, uint8_t r, uint8_t g, uint8_t b);
-};
+    enumLightsUpArrow,
+    enumLightsDownArrow,
+    enumLightsLeftArrow,
+    enumLightsRightArrow,
+} lightIdentifier_t;
+
+namespace Lights
+{
+    // Initialize lighting dependencies
+    void initialize();
+
+    // Set all LEDs in a strip to a color
+    void illuminateStrip(lightIdentifier_t id, const CRGB &color);
+
+    // Set lights as enabled or disabled
+    void setStatus(lightIdentifier_t id, bool bEnabled);
+
+    // Fade the current LEDs in all strips
+    void update();
+}

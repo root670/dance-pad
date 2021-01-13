@@ -65,5 +65,4 @@ public:
     Sensor          m_sensorE;
     Sensor          m_sensorS;
     Sensor          m_sensorW;
-    RGBLights       m_lights;
 };

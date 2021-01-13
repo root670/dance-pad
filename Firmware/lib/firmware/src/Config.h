@@ -77,5 +77,3 @@ private:
     std::map<String, uint16_t>  m_mapUInt16;
     std::map<String, uint32_t>  m_mapUInt32;
 };
-
-// extern Configuration g_config;

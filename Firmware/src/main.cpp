@@ -10,6 +10,7 @@
 #include <array>
 #include "Panel.h"
 #include "Config.h"
+#include "Lighting.h"
 
 static String s_strVersion;
 static char s_pSextetStream[14]; // Includes newline characteam
@@ -63,6 +64,7 @@ void updatePanels()
 
 void setup()
 {
+    delay(1000);
     s_strVersion.concat("Dance Pad Firmware " __DATE__);
     s_strVersion.concat(' ');
     s_strVersion.concat(__TIME__);
@@ -80,6 +82,19 @@ void setup()
     Joystick.X(512);
     Joystick.Y(512);
     Joystick.Z(512);
+
+    Lights::initialize();
+
+    for(int i = 0; i < 3; i++)
+    {
+        CRGB color(i==0?128:0, i==1?128:0, i==2?128:0);
+        Lights::illuminateStrip(enumLightsUpArrow,      color);
+        Lights::illuminateStrip(enumLightsDownArrow,    color);
+        Lights::illuminateStrip(enumLightsLeftArrow,    color);
+        Lights::illuminateStrip(enumLightsRightArrow,   color);
+        FastLED.show();
+        FastLED.delay(200);
+    }
 }
 
 void printSensorValues()
@@ -139,39 +154,17 @@ void printSensorValues()
     Serial.println(analogRead(PIN_RIGHT_W));
 }
 
-// void decodeSextetStream()
-// {
-//     // Cabinet
-//     g_pSextetStream[0] & 0x01; // Marquee upper-left
-//     g_pSextetStream[0] & 0x02; // Marquee upper-right
-//     g_pSextetStream[0] & 0x04; // Marquee lower-left
-//     g_pSextetStream[0] & 0x08; // Marquee lower-right
-//     g_pSextetStream[0] & 0x10; // Bass left
-//     g_pSextetStream[0] & 0x20; // Bass right
+static CRGB s_colorBlue(0x18, 0, 0xff);
+static CRGB s_colorMag(0xeb, 0, 0x9b);
 
-//     // Player 1
-//     g_pSextetStream[1] & 0x01; // P1 Menu Left
-//     g_pSextetStream[1] & 0x02; // P1 Menu Right
-//     g_pSextetStream[1] & 0x04; // P1 Menu Up
-//     g_pSextetStream[1] & 0x08; // P1 Menu Down
-//     g_pSextetStream[1] & 0x10; // P1 Start
-//     g_pSextetStream[1] & 0x20; // P1 Select
-//     g_pSextetStream[2] & 0x01; // P1 Back
-//     g_pSextetStream[2] & 0x02; // P1 Coin
-//     g_pSextetStream[2] & 0x04; // P1 Operator
-//     g_pSextetStream[2] & 0x08; // P1 Effect Up
-//     g_pSextetStream[2] & 0x10; // P1 Effect Down
-//     g_pSextetStream[3] & 0x01; // P1 Menu Left
-//     g_pSextetStream[3] & 0x02; // P1 Menu Right
-//     g_pSextetStream[3] & 0x04; // P1 Menu Up
-//     g_pSextetStream[3] & 0x08; // P1 Menu Down
-//     g_pSextetStream[3] & 0x10; // P1 Start
-//     g_pSextetStream[3] & 0x20; // P1 Select
-//     g_pSextetStream[4] & 0x01; // P1 Pad Left
-//     g_pSextetStream[4] & 0x02; // P1 Pad Right
-//     g_pSextetStream[4] & 0x04; // P1 Pad Up
-//     g_pSextetStream[4] & 0x08; // P1 Pad Down
-// }
+void decodeSextetStream()
+{
+    // Player 1 pad lights
+    Lights::setStatus(enumLightsLeftArrow,  s_pSextetStream[3] & 0x01);
+    Lights::setStatus(enumLightsRightArrow, s_pSextetStream[3] & 0x02);
+    Lights::setStatus(enumLightsUpArrow,    s_pSextetStream[3] & 0x04);
+    Lights::setStatus(enumLightsDownArrow,  s_pSextetStream[3] & 0x08);
+}
 
 // Process data sent over the serial connection
 //
@@ -200,7 +193,7 @@ public:
                 Serial.readBytes(s_pSextetStream+1, 13);
 
                 // Update the lights
-                //decodeSextetStream();
+                decodeSextetStream();
             }
             else if(c == '-')
             {
@@ -440,7 +433,7 @@ static elapsedMicros s_timeSinceLEDUpdate;
 
 const uint32_t kMicrosPerSecond = 1000000;
 const uint32_t kJoystickUpdateFrequency = 1000;
-const uint32_t kLEDUpdateFrequency = 60;
+const uint32_t kLEDUpdateFrequency = 100;
 
 void loop()
 {
@@ -454,12 +447,13 @@ void loop()
         updateJoystick();
     }
 
-    // // Limit frequency of LEDs
-    // if(s_timeSinceLEDUpdate >= kMicrosPerSecond/kLEDUpdateFrequency)
-    // {
-    //     s_timeSinceLEDUpdate -= kMicrosPerSecond/kLEDUpdateFrequency;
-    //     FastLED.show();
-    // }
+    // Limit frequency of LEDs
+    if(s_timeSinceLEDUpdate >= kMicrosPerSecond/kLEDUpdateFrequency)
+    {
+        s_timeSinceLEDUpdate -= kMicrosPerSecond/kLEDUpdateFrequency;
+        Lights::update();
+        FastLED.show();
+    }
 
     // printSensorValues();
 }
