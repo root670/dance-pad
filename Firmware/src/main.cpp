@@ -233,7 +233,7 @@ public:
                 {
                     onCommandGetValues();
                 }
-                else if (m_strCommand.equalsIgnoreCase("calibrate"))
+                else if (m_strCommand.equalsIgnoreCase(kCmdCalibrate))
                 {
                     calibratePanels();
                 }
@@ -256,6 +256,7 @@ private:
     static const String kCmdSetConfig;
     static const String kCmdPersist;
     static const String kCmdValues;
+    static const String kCmdCalibrate;
 
     static const String kConfigTypeStr;
     static const String kConfigTypeUInt16;
@@ -414,6 +415,7 @@ const String SerialProcessor::kCmdGetConfig = "config";
 const String SerialProcessor::kCmdSetConfig = "set";
 const String SerialProcessor::kCmdPersist   = "persist";
 const String SerialProcessor::kCmdValues    = "v";
+const String SerialProcessor::kCmdCalibrate = "calibrate";
 
 const String SerialProcessor::kResponseSuccess = "!";
 const String SerialProcessor::kResponseFailure = "?";
