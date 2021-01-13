@@ -27,6 +27,7 @@ void Sensor::calibrate()
 {
     m_nTriggerThreshold = m_nPressure + Configuration::getInstance()->getUInt16(m_strTriggerOffsetSetting, kDefaultTriggerOffset);
     m_nReleaseThreshold = m_nPressure + Configuration::getInstance()->getUInt16(m_strReleaseOffsetSetting, kDefaultReleaseOffset);
+    m_bPressed = false;
 }
 
 void Sensor::readSensor()
