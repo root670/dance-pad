@@ -29,6 +29,7 @@ void Configuration::setString(const String &strKey, const String &strValue)
 {
     m_mapStr[strKey] = strValue;
     m_bDirty = true;
+    notifyCallbacks();
 }
 
 const uint16_t& Configuration::getUInt16(const String &strKey, const uint16_t &nDefault)
@@ -48,6 +49,7 @@ void Configuration::setUInt16(const String &strKey, uint16_t nValue)
 {
     m_mapUInt16[strKey] = nValue;
     m_bDirty = true;
+    notifyCallbacks();
 }
 
 const uint32_t& Configuration::getUInt32(const String &strKey, const uint32_t &nDefault)
@@ -67,6 +69,7 @@ void Configuration::setUInt32(const String &strKey, uint32_t nValue)
 {
     m_mapUInt32[strKey] = nValue;
     m_bDirty = true;
+    notifyCallbacks();
 }
 
 int Configuration::put(int nOffset, const String &str)const
@@ -180,4 +183,17 @@ String Configuration::toString()const
     strResponse.setCharAt(strResponse.length() - 1, '\0');
 
     return strResponse;
+}
+
+void Configuration::registerCallback(pFnConfigCallback cb)
+{
+    m_vCallbacks.push_back(cb);
+}
+
+void Configuration::notifyCallbacks()const
+{
+    for(auto const &cb : m_vCallbacks)
+    {
+        cb();
+    }
 }

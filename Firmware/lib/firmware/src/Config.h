@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <map>
+#include <vector>
 
 class Configuration
 {
@@ -34,6 +35,11 @@ public:
     // Get string representation of configuration items in the form
     // `KEY1=VALUE1,KEY2=VALUE2,...,KEYN=VALUEN`.
     String toString()const;
+
+    typedef void (*pFnConfigCallback)();
+
+    // Set a function to be called when the configuration is updated by the set*() methods
+    void registerCallback(pFnConfigCallback cb);
 
 private:
 
@@ -72,8 +78,12 @@ private:
         return nOffset + sizeof(nValue);
     }
 
-    bool                        m_bLoaded, m_bDirty;
-    std::map<String, String>    m_mapStr;
-    std::map<String, uint16_t>  m_mapUInt16;
-    std::map<String, uint32_t>  m_mapUInt32;
+    // Call registered callbacks to indicate the configuration has been updated
+    void notifyCallbacks()const;
+
+    bool                            m_bLoaded, m_bDirty;
+    std::map<String, String>        m_mapStr;
+    std::map<String, uint16_t>      m_mapUInt16;
+    std::map<String, uint32_t>      m_mapUInt32;
+    std::vector<pFnConfigCallback>  m_vCallbacks;
 };
