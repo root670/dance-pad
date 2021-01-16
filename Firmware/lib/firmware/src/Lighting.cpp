@@ -2,6 +2,7 @@
 #include <OctoWS2811.h>
 
 #include "Lighting.h"
+#include "Config.h"
 
 #define NUM_LEDS_PER_STRIP  25
 #define NUM_STRIPS          4
@@ -88,52 +89,86 @@ private:
 
 static MyController<GRB> s_controller;
 
-namespace Lights
+static const String s_strColorUp("color_up");
+static const String s_strColorDown("color_down");
+static const String s_strColorLeft("color_left");
+static const String s_strColorRight("color_right");
+static const Lights::Color s_colorBlue(0x18, 0, 0xff);
+static const Lights::Color s_colorMag(0xeb, 0, 0x9b);
+
+Lights* Lights::m_pInst = NULL;
+
+Lights* Lights::getInstance()
 {
+    if(!m_pInst)
+        m_pInst = new Lights();
 
-    void initialize()
+    return m_pInst;
+}
+
+static void OnConfigUpdated()
+{
+    Lights::getInstance()->updateColors();
+}
+
+Lights::Lights()
+    : m_bUp(false), m_bDown(false), m_bLeft(false), m_bRight(false)
+{
+    FastLED.addLeds(&s_controller, s_leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+    FastLED.setBrightness(BRIGHTNESS);
+    FastLED.setMaxRefreshRate(0); // We will constrain this ourselves
+
+    updateColors();
+
+    Configuration::getInstance()->registerCallback(OnConfigUpdated);
+}
+
+void Lights::updateColors()
+{
+    s_colorUp.fromUInt32(
+        Configuration::getInstance()->getUInt32(s_strColorUp, s_colorMag.toUInt32())
+    );
+    s_colorDown.fromUInt32(
+        Configuration::getInstance()->getUInt32(s_strColorDown, s_colorMag.toUInt32())
+    );
+    s_colorLeft.fromUInt32(
+        Configuration::getInstance()->getUInt32(s_strColorLeft, s_colorBlue.toUInt32())
+    );
+    s_colorRight.fromUInt32(
+        Configuration::getInstance()->getUInt32(s_strColorRight, s_colorBlue.toUInt32())
+    );
+}
+
+void Lights::illuminateStrip(lightIdentifier_t id, const CRGB &color)
+{
+    for(int nLED = 0; nLED < NUM_LEDS_PER_STRIP; nLED++)
     {
-        FastLED.addLeds(&s_controller, s_leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
-        FastLED.setBrightness(BRIGHTNESS);
+        s_leds[(int)id*NUM_LEDS_PER_STRIP + nLED] = color;
     }
+}
 
-    bool bUp(false), bDown(false), bLeft(false), bRight(false);
+void Lights::setStatus(lightIdentifier_t id, bool bEnabled)
+{
+    if(id == enumLightsUpArrow)
+        m_bUp = bEnabled;
+    else if(id == enumLightsDownArrow)
+        m_bDown = bEnabled;
+    else if(id == enumLightsLeftArrow)
+        m_bLeft = bEnabled;
+    else if(id == enumLightsRightArrow)
+        m_bRight = bEnabled;
+}
 
-    void illuminateStrip(lightIdentifier_t id, const CRGB &color)
-    {
-        for(int nLED = 0; nLED < NUM_LEDS_PER_STRIP; nLED++)
-        {
-            s_leds[(int)id*NUM_LEDS_PER_STRIP + nLED] = color;
-        }
-    }
+void Lights::update()
+{
+    if(m_bUp)
+        illuminateStrip(enumLightsUpArrow, s_colorUp);
+    if(m_bDown)
+        illuminateStrip(enumLightsDownArrow, s_colorDown);
+    if(m_bLeft)
+        illuminateStrip(enumLightsLeftArrow, s_colorLeft);
+    if(m_bRight)
+        illuminateStrip(enumLightsRightArrow, s_colorRight);
 
-    void setStatus(lightIdentifier_t id, bool bEnabled)
-    {
-        if(id == enumLightsUpArrow)
-            bUp = bEnabled;
-        else if(id == enumLightsDownArrow)
-            bDown = bEnabled;
-        else if(id == enumLightsLeftArrow)
-            bLeft = bEnabled;
-        else if(id == enumLightsRightArrow)
-            bRight = bEnabled;
-    }
-
-    static CRGB s_colorBlue(0x18, 0, 0xff);
-    static CRGB s_colorMag(0xeb, 0, 0x9b);
-
-    void update()
-    {
-        if(bUp)
-            illuminateStrip(enumLightsUpArrow, s_colorMag);
-        if(bDown)
-            illuminateStrip(enumLightsDownArrow, s_colorMag);
-        if(bLeft)
-            illuminateStrip(enumLightsLeftArrow, s_colorBlue);
-        if(bRight)
-            illuminateStrip(enumLightsRightArrow, s_colorBlue);
-
-        fadeToBlackBy(s_leds, NUM_LEDS, 20);
-    }
-
-} // namespace Lights
+    fadeToBlackBy(s_leds, NUM_LEDS, 20);
+}

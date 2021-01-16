@@ -83,15 +83,13 @@ void setup()
     Joystick.Y(512);
     Joystick.Z(512);
 
-    Lights::initialize();
-
     for(int i = 0; i < 3; i++)
     {
         CRGB color(i==0?128:0, i==1?128:0, i==2?128:0);
-        Lights::illuminateStrip(enumLightsUpArrow,      color);
-        Lights::illuminateStrip(enumLightsDownArrow,    color);
-        Lights::illuminateStrip(enumLightsLeftArrow,    color);
-        Lights::illuminateStrip(enumLightsRightArrow,   color);
+        Lights::getInstance()->illuminateStrip(enumLightsUpArrow,      color);
+        Lights::getInstance()->illuminateStrip(enumLightsDownArrow,    color);
+        Lights::getInstance()->illuminateStrip(enumLightsLeftArrow,    color);
+        Lights::getInstance()->illuminateStrip(enumLightsRightArrow,   color);
         FastLED.show();
         FastLED.delay(200);
     }
@@ -154,24 +152,21 @@ void printSensorValues()
     Serial.println(analogRead(PIN_RIGHT_W));
 }
 
-static CRGB s_colorBlue(0x18, 0, 0xff);
-static CRGB s_colorMag(0xeb, 0, 0x9b);
-
 void decodeSextetStream()
 {
     // Player 1 pad lights
-    Lights::setStatus(enumLightsLeftArrow,  s_pSextetStream[3] & 0x01);
-    Lights::setStatus(enumLightsRightArrow, s_pSextetStream[3] & 0x02);
-    Lights::setStatus(enumLightsUpArrow,    s_pSextetStream[3] & 0x04);
-    Lights::setStatus(enumLightsDownArrow,  s_pSextetStream[3] & 0x08);
+    Lights::getInstance()->setStatus(enumLightsLeftArrow,  s_pSextetStream[3] & 0x01);
+    Lights::getInstance()->setStatus(enumLightsRightArrow, s_pSextetStream[3] & 0x02);
+    Lights::getInstance()->setStatus(enumLightsUpArrow,    s_pSextetStream[3] & 0x04);
+    Lights::getInstance()->setStatus(enumLightsDownArrow,  s_pSextetStream[3] & 0x08);
 }
 
 // Process data sent over the serial connection
 //
 // Input data can either be lighting data in SextetStream format or a command.
 // When the input is lighting data, no response is sent. All commands are
-// prefixed with `-` and have a single-line response terminated with a newline
-// character (`\n`).
+// prefixed with `-` and may have a single-line response terminated with a
+// newline character (`\n`).
 class SerialProcessor
 {
 public:
@@ -236,7 +231,7 @@ public:
                 }
 
                 if(m_strResponse.length() > 0)
-                Serial.println(m_strResponse);
+                    Serial.println(m_strResponse);
             }
         }
     }
@@ -451,7 +446,7 @@ void loop()
     if(s_timeSinceLEDUpdate >= kMicrosPerSecond/kLEDUpdateFrequency)
     {
         s_timeSinceLEDUpdate -= kMicrosPerSecond/kLEDUpdateFrequency;
-        Lights::update();
+        Lights::getInstance()->update();
         FastLED.show();
     }
 
