@@ -1,7 +1,7 @@
 #include "Sensor.h"
 
-static const uint16_t kDefaultTriggerOffset = 50;
-static const uint16_t kDefaultReleaseOffset = 30;
+static const uint16_t kDefaultTriggerOffset = 100;
+static const uint16_t kDefaultReleaseOffset = 60;
 
 // Time in milliseconds of inactivity to cause a recalibration.
 static uint32_t s_calibrationPeriodMS = 10000; // 10 seconds
