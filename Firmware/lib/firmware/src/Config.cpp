@@ -57,6 +57,7 @@ const uint32_t& Configuration::getUInt32(const String &strKey, const uint32_t &n
     {
         m_mapUInt32[strKey] = nDefault;
         m_bDirty = true;
+        return nDefault;
     }
 
     return it->second;
