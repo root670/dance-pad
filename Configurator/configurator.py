@@ -4,10 +4,12 @@ import math
 import sys
 import time
 import os
+import re
 
 from PyQt5 import uic
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QApplication, QDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QDialog, QTableWidgetItem, QColorDialog
+from PyQt5.QtGui import QColor
 import numpy as np
 import pyqtgraph as pg
 import qdarkstyle
@@ -38,6 +40,14 @@ class Dialog(QDialog):
             self.comboBoxDevices.addItem(f'{index}: {port.device}')
 
         self.pushButton_reset.clicked.connect(self.on_reset_clicked)
+
+        # Setup lighting controls
+        self.pushButton_colorUp.clicked.connect(self.on_up_color_clicked)
+        self.pushButton_colorDown.clicked.connect(self.on_down_color_clicked)
+        self.pushButton_colorLeft.clicked.connect(self.on_left_color_clicked)
+        self.pushButton_colorRight.clicked.connect(self.on_right_color_clicked)
+
+        self.checkBox_displayLights.toggled.connect(self.on_display_lights_toggled)
 
         # Setup plots
         self.data_sensors = [np.zeros(250, dtype=np.int16)] * 16
@@ -202,10 +212,59 @@ class Dialog(QDialog):
         self.tableThresholds.item(14,0).setText(str(config['right']['south_pin']))
         self.tableThresholds.item(15,0).setText(str(config['right']['west_pin']))
 
-        self.labelDeviceInfo.setText(f'Connected to {device}.\n\n{device_info}')
+        self.pushButton_colorUp.setStyleSheet(
+            'background-color: rgb({},{},{})'.format(*config['up']['color'])
+        )
+        self.pushButton_colorDown.setStyleSheet(
+            'background-color: rgb({},{},{})'.format(*config['down']['color'])
+        )
+        self.pushButton_colorLeft.setStyleSheet(
+            'background-color: rgb({},{},{})'.format(*config['left']['color'])
+        )
+        self.pushButton_colorRight.setStyleSheet(
+            'background-color: rgb({},{},{})'.format(*config['right']['color'])
+        )
+
+        self.labelDeviceInfo.setText(device_info)
 
     def on_reset_clicked(self):
         self.comm.calibrate()
+
+    @staticmethod
+    def __get_color_from_stylesheet(stylesheet):
+        """Get a 3-tuple of the RGB value from the `background-color` property
+        in `stylesheet`.
+        """
+        pattern = re.compile(r'background-color: rgb\(([0-9]+),\s*([0-9]+),\s*([0-9]+)\)')
+        return tuple(map(int, pattern.search(stylesheet).groups()))
+
+    def __on_color_clicked(self, widget, panel):
+        current_color = self.__get_color_from_stylesheet(widget.styleSheet())
+        color = QColorDialog.getColor(QColor.fromRgb(*current_color))
+        if not color.isValid():
+            return # Closed the color dialog
+
+        color_rgb = (color.red(), color.green(), color.blue())
+        widget.setStyleSheet(
+            'background-color: rgb({},{},{})'.format(*color_rgb)
+        )
+
+        self.comm.set_color(panel, *color_rgb)
+
+    def on_up_color_clicked(self):
+        self.__on_color_clicked(self.pushButton_colorUp, 'up')
+    
+    def on_down_color_clicked(self):
+        self.__on_color_clicked(self.pushButton_colorDown, 'down')
+
+    def on_left_color_clicked(self):
+        self.__on_color_clicked(self.pushButton_colorLeft, 'left')
+
+    def on_right_color_clicked(self):
+        self.__on_color_clicked(self.pushButton_colorRight, 'right')
+
+    def on_display_lights_toggled(self, enabled):
+        self.comm.set_arrow_lights(enabled)
 
 
 def main():
