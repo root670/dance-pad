@@ -75,13 +75,16 @@ class Communicator:
 
     def __init__(
         self,
-        ser: serial.Serial
+        ser: Union[serial.Serial, str],
     ) -> None:
         """Communicate with the firmware using a serial interface.
 
         Args:
             ser: Serial object
         """
+        if isinstance(ser, str):
+            ser = serial.Serial(ser)
+
         self._ser = ser
 
     def __send_line(self, line: str) -> None:
