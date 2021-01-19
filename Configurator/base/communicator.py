@@ -2,7 +2,7 @@
 """
 
 from enum import Enum
-from typing import Mapping
+from typing import Mapping, Tuple, Union
 import serial
 
 
@@ -29,6 +29,29 @@ class PanelOrientation(Enum):
             }[degrees]
         except KeyError:
             raise KeyError(f'Invalid panel orientation: {degrees}')
+
+
+class Color:
+
+    @staticmethod
+    def from_int(value: int) -> Tuple[int, int, int]:
+        return (value & 0xFF, (value >> 8) & 0xFF, (value >> 16) & 0xFF)
+
+    @staticmethod
+    def to_int(color: Tuple[int, int, int]) -> int:
+
+        if len(color) != 3:
+            raise ValueError("`color` must be a 3-tuple")
+
+        for component in range(len(color)):
+            value = color[component]
+            if value < 0 or value > 255:
+                raise ValueError(
+            '{component} component of color must be in range [0, 255].'.format(
+                component='RGB'[component]
+            ))
+
+        return color[0] & (color[1] << 8) & (color[2] << 16)
 
 
 class Communicator:
@@ -181,9 +204,13 @@ class Communicator:
         self.__send_command(self.COMMAND_GETCONFIG)
         response = self.__get_line()
         split = response.split(',')
+
+        key_value_entries = dict(entry.split('=') for entry in split[20:])
+
         return dict(
             up=dict(
                 orientation=PanelOrientation.from_degrees(int(split.pop(0))),
+                color=Color.from_int(int(key_value_entries['color_up'])),
                 north_pin=int(split.pop(0)),
                 east_pin=int(split.pop(0)),
                 south_pin=int(split.pop(0)),
@@ -191,6 +218,7 @@ class Communicator:
             ),
             down=dict(
                 orientation=PanelOrientation.from_degrees(int(split.pop(0))),
+                color=Color.from_int(int(key_value_entries['color_down'])),
                 north_pin=int(split.pop(0)),
                 east_pin=int(split.pop(0)),
                 south_pin=int(split.pop(0)),
@@ -198,6 +226,7 @@ class Communicator:
             ),
             left=dict(
                 orientation=PanelOrientation.from_degrees(int(split.pop(0))),
+                color=Color.from_int(int(key_value_entries['color_left'])),
                 north_pin=int(split.pop(0)),
                 east_pin=int(split.pop(0)),
                 south_pin=int(split.pop(0)),
@@ -205,6 +234,7 @@ class Communicator:
             ),
             right=dict(
                 orientation=PanelOrientation.from_degrees(int(split.pop(0))),
+                color=Color.from_int(int(key_value_entries['color_right'])),
                 north_pin=int(split.pop(0)),
                 east_pin=int(split.pop(0)),
                 south_pin=int(split.pop(0)),
