@@ -180,7 +180,8 @@ String Configuration::toString()const
     }
 
     // Remove trailing comma
-    strResponse.setCharAt(strResponse.length() - 1, '\0');
+    if(strResponse.endsWith(','))
+        strResponse.remove(strResponse.length() - 1);
 
     return strResponse;
 }
