@@ -43,6 +43,10 @@ class Communicator:
     COMMAND_VALUES = 'v'
     COMMAND_CALIBRATE = 'calibrate'
 
+    CONFIG_TYPE_STRING = 'str'
+    CONFIG_TYPE_U16 = 'u16'
+    CONFIG_TYPE_U32 = 'u32'
+
     RESPONSE_SUCCESS = '!'
     RESPONSE_FAILURE = '?'
 
@@ -79,18 +83,16 @@ class Communicator:
         """
         self.__send_line(f'-{command}')
 
-    def __set_u16_config(self, key: str, value) -> bool:
-        """Set a configuration item for a 16-bit unsigned value.
+    def __set_config(self, value_type: str, key: str, value) -> None:
+        """Set a configuration item.
 
         Args:
+            value_type: One of {`str`, `u16`, `u32`}.
             key: Name of configuration item.
             value: The value to set the configuration item to.
-
-        Returns:
-            True if the value was set successfully. Otherwise, False.
         """
         self.__send_command(self.COMMAND_SETCONFIG)
-        self.__send_line(f'u16 {key}={value}')
+        self.__send_line(f'{value_type} {key}={value}')
         response = self.__get_line()
 
         if not response in {
@@ -99,7 +101,35 @@ class Communicator:
         }:
             raise ValueError(f'Unexpected response: {response}')
 
-        return response == self.RESPONSE_SUCCESS
+        if response != self.RESPONSE_SUCCESS:
+            raise ValueError(f'Failed to set config {key}[{value_type}]={value}')
+
+    def __set_config_u16(self, key: str, value) -> None:
+        """Set a configuration item for an unsigned 16-bit integer.
+
+        Args:
+            key: Name of the configuration item.
+            value: The value to set the configuration item to.
+        """
+        self.__set_config(self.CONFIG_TYPE_U16, key, value)
+
+    def __set_config_u32(self, key: str, value) -> None:
+        """Set a configuration item for an unsigned 32-bit integer.
+
+        Args:
+            key: Name of the configuration item.
+            value: The value to set the configuration item to.
+        """
+        self.__set_config(self.CONFIG_TYPE_U32, key, value)
+
+    def __set_config_str(self, key: str, value) -> None:
+        """Set a configuration item for a string.
+
+        Args:
+            key: Name of the configuration item.
+            value: The value to set the configuration item to.
+        """
+        self.__set_config(self.CONFIG_TYPE_STRING, key, value)
 
     def get_version(self) -> str:
         """Get firmware version string.
@@ -117,7 +147,7 @@ class Communicator:
         """
         self.__send_command(self.COMMAND_CALIBRATE)
 
-    def set_thresholds(self, pin: int, trigger: int, release:int) -> bool:
+    def set_thresholds(self, pin: int, trigger: int, release:int) -> None:
         """Set the tresholds for a sensor.
 
         Args:
@@ -139,8 +169,8 @@ class Communicator:
 
         key_name = f'sensor{pin}'
 
-        return self.__set_u16_config(key_name + 'trigger', trigger) and \
-            self.__set_u16_config(key_name + 'release', release)
+        self.__set_config_u16(key_name + 'trigger', trigger)
+        self.__set_config_u16(key_name + 'release', release)
 
     def get_config(self) -> Mapping[str, Enum]:
         """Get configuration.
