@@ -51,7 +51,7 @@ class Color:
                 component='RGB'[component]
             ))
 
-        return color[0] & (color[1] << 8) & (color[2] << 16)
+        return color[0] | (color[1] << 8) | (color[2] << 16)
 
 
 class Communicator:
@@ -72,6 +72,8 @@ class Communicator:
 
     RESPONSE_SUCCESS = '!'
     RESPONSE_FAILURE = '?'
+
+    DIRECTIONS = {'up', 'down', 'left', 'right'}
 
     def __init__(
         self,
@@ -345,3 +347,21 @@ class Communicator:
                 ),
             ),
         )
+
+    def set_color(self, panel, r, g, b) -> None:
+        if panel not in self.DIRECTIONS:
+            raise ValueError('{panel} must be one of: {directions}'.format(
+                panel=panel,
+                directions=', '.join(self.DIRECTIONS)
+        ))
+
+        rgb = Color.to_int((r, g, b))
+        self.__set_config_u32(f'color_{panel}', rgb)
+
+    def set_arrow_lights(self, enabled) -> None:
+        """Turn all the arrow lights on or off
+        """
+        if enabled:
+            self.__send_line('@@@O@@@@@@@@@')
+        else:
+            self.__send_line('@@@@@@@@@@@@@')
