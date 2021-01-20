@@ -161,6 +161,8 @@ void Lights::setStatus(lightIdentifier_t id, bool bEnabled)
 
 void Lights::update()
 {
+    fadeToBlackBy(s_leds, NUM_LEDS, 20);
+
     if(m_bUp)
         illuminateStrip(enumLightsUpArrow, s_colorUp);
     if(m_bDown)
@@ -169,6 +171,4 @@ void Lights::update()
         illuminateStrip(enumLightsLeftArrow, s_colorLeft);
     if(m_bRight)
         illuminateStrip(enumLightsRightArrow, s_colorRight);
-
-    fadeToBlackBy(s_leds, NUM_LEDS, 20);
 }
