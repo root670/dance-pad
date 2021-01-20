@@ -35,7 +35,7 @@ static char s_pSextetStream[14]; // Includes newline characteam
 
 static Panel s_panelUp(enumPanelUp, enumPanelOrientation0, PIN_UP_N, PIN_UP_E, PIN_UP_S, PIN_UP_W);
 static Panel s_panelDown(enumPanelDown, enumPanelOrientation270, PIN_DOWN_N, PIN_DOWN_E, PIN_DOWN_S, PIN_DOWN_W);
-static Panel s_panelLeft(enumPanelLeft, enumPanelOrientation180, PIN_LEFT_N, PIN_LEFT_E, PIN_LEFT_S, PIN_LEFT_W);
+static Panel s_panelLeft(enumPanelLeft, enumPanelOrientation270, PIN_LEFT_N, PIN_LEFT_E, PIN_LEFT_S, PIN_LEFT_W);
 static Panel s_panelRight(enumPanelRight, enumPanelOrientation0, PIN_RIGHT_N, PIN_RIGHT_E, PIN_RIGHT_S, PIN_RIGHT_W);
 
 // Joystick button mapping
