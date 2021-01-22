@@ -58,4 +58,6 @@ private:
     Color s_colorRight;
 
     bool m_bUp, m_bDown, m_bLeft, m_bRight;
+
+    void colorCorrect()const;
 };

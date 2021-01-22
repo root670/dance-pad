@@ -10,7 +10,8 @@
 #define BRIGHTNESS          150
 #define COLOR_ORDER         GRB
 
-static CRGB s_leds[NUM_LEDS];
+static CRGB s_ledsRaw[NUM_LEDS];
+static CRGB s_ledsCorrected[NUM_LEDS];
 
 #define UPDATES_PER_SECOND  100
 
@@ -96,6 +97,25 @@ static const String s_strColorRight("color_right");
 static const Lights::Color s_colorBlue(0x18, 0, 0xff);
 static const Lights::Color s_colorMag(0xeb, 0, 0x9b);
 
+static const uint8_t s_gamma8[] = {
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,
+    1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,  2,  2,  2,  2,
+    2,  3,  3,  3,  3,  3,  3,  3,  4,  4,  4,  4,  4,  5,  5,  5,
+    5,  6,  6,  6,  6,  7,  7,  7,  7,  8,  8,  8,  9,  9,  9, 10,
+   10, 10, 11, 11, 11, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 16,
+   17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 24, 24, 25,
+   25, 26, 27, 27, 28, 29, 29, 30, 31, 32, 32, 33, 34, 35, 35, 36,
+   37, 38, 39, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 50,
+   51, 52, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68,
+   69, 70, 72, 73, 74, 75, 77, 78, 79, 81, 82, 83, 85, 86, 87, 89,
+   90, 92, 93, 95, 96, 98, 99,101,102,104,105,107,109,110,112,114,
+  115,117,119,120,122,124,126,127,129,131,133,135,137,138,140,142,
+  144,146,148,150,152,154,156,158,160,162,164,167,169,171,173,175,
+  177,180,182,184,186,189,191,193,196,198,200,203,205,208,210,213,
+  215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255
+};
+
 Lights* Lights::m_pInst = NULL;
 
 Lights* Lights::getInstance()
@@ -114,7 +134,7 @@ static void OnConfigUpdated()
 Lights::Lights()
     : m_bUp(false), m_bDown(false), m_bLeft(false), m_bRight(false)
 {
-    FastLED.addLeds(&s_controller, s_leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+    FastLED.addLeds(&s_controller, s_ledsCorrected, NUM_LEDS).setCorrection(TypicalLEDStrip);
     FastLED.setBrightness(BRIGHTNESS);
     FastLED.setMaxRefreshRate(0); // We will constrain this ourselves
 
@@ -143,7 +163,7 @@ void Lights::illuminateStrip(lightIdentifier_t id, const CRGB &color)
 {
     for(int nLED = 0; nLED < NUM_LEDS_PER_STRIP; nLED++)
     {
-        s_leds[(int)id*NUM_LEDS_PER_STRIP + nLED] = color;
+        s_ledsRaw[(int)id*NUM_LEDS_PER_STRIP + nLED] = color;
     }
 }
 
@@ -159,9 +179,21 @@ void Lights::setStatus(lightIdentifier_t id, bool bEnabled)
         m_bRight = bEnabled;
 }
 
+void Lights::colorCorrect()const
+{
+    for(int nLED = 0; nLED < NUM_LEDS; nLED++)
+    {
+        const CRGB &src = s_ledsRaw[nLED];
+        CRGB &dst       = s_ledsCorrected[nLED];
+        dst.r = s_gamma8[src.r];
+        dst.g = s_gamma8[src.g];
+        dst.b = s_gamma8[src.b];
+    }
+}
+
 void Lights::update()
 {
-    fadeToBlackBy(s_leds, NUM_LEDS, 20);
+    fadeToBlackBy(s_ledsRaw, NUM_LEDS, 20);
 
     if(m_bUp)
         illuminateStrip(enumLightsUpArrow, s_colorUp);
@@ -171,4 +203,6 @@ void Lights::update()
         illuminateStrip(enumLightsLeftArrow, s_colorLeft);
     if(m_bRight)
         illuminateStrip(enumLightsRightArrow, s_colorRight);
+
+    colorCorrect();
 }

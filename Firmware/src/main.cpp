@@ -85,11 +85,12 @@ void setup()
 
     for(int i = 0; i < 3; i++)
     {
-        CRGB color(i==0?128:0, i==1?128:0, i==2?128:0);
+        CRGB color(i==0?255:0, i==1?255:0, i==2?255:0);
         Lights::getInstance()->illuminateStrip(enumLightsUpArrow,      color);
         Lights::getInstance()->illuminateStrip(enumLightsDownArrow,    color);
         Lights::getInstance()->illuminateStrip(enumLightsLeftArrow,    color);
         Lights::getInstance()->illuminateStrip(enumLightsRightArrow,   color);
+        Lights::getInstance()->update();
         FastLED.show();
         FastLED.delay(200);
     }
