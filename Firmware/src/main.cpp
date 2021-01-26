@@ -218,6 +218,10 @@ public:
                 {
                     onCommandPersist();
                 }
+                else if(m_strCommand.equalsIgnoreCase(kCmdReset))
+                {
+                    onCommandReset();
+                }
                 else if(m_strCommand.equalsIgnoreCase(kCmdValues))
                 {
                     onCommandGetValues();
@@ -244,6 +248,7 @@ private:
     static const String kCmdGetConfig;
     static const String kCmdSetConfig;
     static const String kCmdPersist;
+    static const String kCmdReset;
     static const String kCmdValues;
     static const String kCmdCalibrate;
 
@@ -365,6 +370,12 @@ private:
        Configuration::getInstance()->write();
     }
 
+    // Reset configuration items in memory and in the EEPROM
+    void onCommandReset()
+    {
+        Configuration::getInstance()->reset();
+    }
+
     // Get the raw values and thresholds for each sensor
     void onCommandGetValues()
     {
@@ -403,6 +414,7 @@ const String SerialProcessor::kCmdBlink     = "blink";
 const String SerialProcessor::kCmdGetConfig = "config";
 const String SerialProcessor::kCmdSetConfig = "set";
 const String SerialProcessor::kCmdPersist   = "persist";
+const String SerialProcessor::kCmdReset     = "reset";
 const String SerialProcessor::kCmdValues    = "v";
 const String SerialProcessor::kCmdCalibrate = "calibrate";
 
