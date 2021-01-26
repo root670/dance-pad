@@ -119,6 +119,18 @@ void Configuration::read()
         m_mapStr[strKey] = strValue;
     }
 
+    // Get 16-bit unsigned integers
+    int nNumUInt16;
+    nOffset = get(nOffset, nNumUInt16);
+    for(int nElement = 0; nElement < nNumUInt16; nElement++)
+    {
+        String strKey;
+        uint16_t nValue;
+        nOffset = get(nOffset, strKey);
+        nOffset = get(nOffset, nValue);
+        m_mapUInt16[strKey] = nValue;
+    }
+
     // Get 32-bit unsigned integers
     int nNumUInt32;
     nOffset = get(nOffset, nNumUInt32);
@@ -136,30 +148,47 @@ void Configuration::read()
 
 void Configuration::write()
 {
-    if(m_bDirty)
+    if(!m_bDirty)
+        return;
+
+    // Write sentinel value
+    int nOffset(0);
+    nOffset = put(nOffset, kSentinelValue);
+
+    // Write strings
+    nOffset = put(nOffset, m_mapStr.size());
+    for(auto const &element : m_mapStr)
     {
-        // Write sentinel value
-        int nOffset(0);
-        nOffset = put(nOffset, kSentinelValue);
-
-        // Write strings
-        nOffset = put(nOffset, m_mapStr.size());
-        for(auto const &element : m_mapStr)
-        {
-            nOffset = put(nOffset, element.first);
-            nOffset = put(nOffset, element.second);
-        }
-
-        // Write 32-bit unsigned integers
-        nOffset = put(nOffset, m_mapUInt32.size());
-        for(auto const &element : m_mapUInt32)
-        {
-            nOffset = put(nOffset, element.first);
-            nOffset = put(nOffset, element.second);
-        }
-
-        m_bDirty = true;
+        nOffset = put(nOffset, element.first);
+        nOffset = put(nOffset, element.second);
     }
+
+    // Write 16-bit unsigned integers
+    nOffset = put(nOffset, m_mapUInt16.size());
+    for(auto const &element : m_mapUInt16)
+    {
+        nOffset = put(nOffset, element.first);
+        nOffset = put(nOffset, element.second);
+    }
+
+    // Write 32-bit unsigned integers
+    nOffset = put(nOffset, m_mapUInt32.size());
+    for(auto const &element : m_mapUInt32)
+    {
+        nOffset = put(nOffset, element.first);
+        nOffset = put(nOffset, element.second);
+    }
+
+    m_bDirty = false;
+}
+
+void Configuration::reset()
+{
+    m_mapStr.clear();
+    m_mapUInt16.clear();
+    m_mapUInt32.clear();
+    m_bDirty = true;
+    write();
 }
 
 String Configuration::toString()const

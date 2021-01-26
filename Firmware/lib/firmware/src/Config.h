@@ -32,6 +32,9 @@ public:
     // Write configuration to EEPROM if data is dirty
     void write();
 
+    // Remove all configuration menus from memory and EEPROM.
+    void reset();
+
     // Get string representation of configuration items in the form
     // `KEY1=VALUE1,KEY2=VALUE2,...,KEYN=VALUEN`.
     String toString()const;
@@ -46,7 +49,7 @@ private:
     static Configuration *m_inst;
 
     Configuration()
-        : m_bLoaded(false), m_bDirty(false)
+        : m_bDirty(false)
     {};
 
     // Write a null-terminated string to the EEPROM at nOffset.
@@ -81,7 +84,7 @@ private:
     // Call registered callbacks to indicate the configuration has been updated
     void notifyCallbacks()const;
 
-    bool                            m_bLoaded, m_bDirty;
+    bool                            m_bDirty;
     std::map<String, String>        m_mapStr;
     std::map<String, uint16_t>      m_mapUInt16;
     std::map<String, uint32_t>      m_mapUInt32;
