@@ -445,6 +445,10 @@ const uint32_t kLEDUpdateFrequency = 100;
 
 void loop()
 {
+    // It takes about 17us to sample each sensor (taking the average of 4
+    // readings within the analogRead() call), so with 16 sensors we can read
+    // all panels about 3 times and still have about 150-200us left for lights,
+    // so read intervals should be very consistent.
     updatePanels();
     s_serialProcessor.update();
 
