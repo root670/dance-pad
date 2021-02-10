@@ -189,6 +189,7 @@ void Configuration::reset()
     m_mapUInt32.clear();
     m_bDirty = true;
     write();
+    notifyCallbacks();
 }
 
 String Configuration::toString()const
