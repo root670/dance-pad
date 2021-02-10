@@ -80,6 +80,9 @@ abilities. You might be surprised what you're capable of if you stick with it.
   reports and updating the LEDs. The goal is for it to be easy enough to modify
   to support different pad layouts (i.e. 5 panel StepManiaX or Pump It Up pads)
 
+* `Supplemental`: Various helper scripts and files related to this project. All
+  of these are optional but may be useful depending on you setup.
+
 ## Status
 
 The frame, acrylic panels, and PCB designs have been finalized, fabricated, and
