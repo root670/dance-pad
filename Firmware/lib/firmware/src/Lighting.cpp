@@ -7,7 +7,7 @@
 #define NUM_LEDS_PER_STRIP  25
 #define NUM_STRIPS          4
 #define NUM_LEDS            NUM_LEDS_PER_STRIP * NUM_STRIPS
-#define BRIGHTNESS          150
+#define BRIGHTNESS          200
 #define COLOR_ORDER         GRB
 
 static CRGB s_ledsRaw[NUM_LEDS];
