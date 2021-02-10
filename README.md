@@ -42,13 +42,6 @@ course of a few months, and see it through to completion. Soapbox aside, I
 highly recommend attempting projects for things that seem slightly out of your
 abilities. You might be surprised what you're capable of if you stick with it.
 
-## Planned Features
-
-* Decode SextetStream lighting data to trigger fixed colors
-* Trigger lighting within the firmware based on sensor inputs
-* Display LED animations from GIFs stored on a MicroSD card connected to the
-  Teensy. Trigger these from SextetStream data or sensor triggers
-
 ## Directory Structure
 
 * `Frame`: Inventor project for the aluminum frame. It houses nine 276mm x 276mm
