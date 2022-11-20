@@ -49,6 +49,7 @@ class Dialog(QDialog):
 
         self.horizontalSlider_brightness.valueChanged.connect(self.on_brightness_changed)
         self.checkBox_displayLights.toggled.connect(self.on_display_lights_toggled)
+        self.checkBox_autoLights.toggled.connect(self.on_auto_lights_toggled)
 
         # Setup plots
         self.data_sensors = [np.zeros(250, dtype=np.int16)] * 16
@@ -193,7 +194,8 @@ class Dialog(QDialog):
             ser=serial
         )
 
-        device_info = self.comm.get_version()
+        self.labelDeviceInfo.setText(self.comm.get_version())
+
         config = self.comm.get_config()
 
         self.tableThresholds.item(0,0).setText(str(config['up']['north_pin']))
@@ -227,9 +229,10 @@ class Dialog(QDialog):
             'background-color: rgb({},{},{})'.format(*config['right']['color'])
         )
 
-        # Light brightness/toggle
+        # Lights
         self.labelBrightness.setText(str(config['brightness']))
         self.horizontalSlider_brightness.setValue(config['brightness'])
+        self.checkBox_autoLights.setCheckState(2 if config['auto_lights'] else 0)
 
         self.labelDeviceInfo.setText(device_info)
 
@@ -271,6 +274,9 @@ class Dialog(QDialog):
 
     def on_display_lights_toggled(self, enabled):
         self.comm.set_arrow_lights(enabled)
+
+    def on_auto_lights_toggled(self, enabled):
+        self.comm.set_auto_lights(enabled)
 
     def on_brightness_changed(self, brightness):
         self.labelBrightness.setText(str(brightness))

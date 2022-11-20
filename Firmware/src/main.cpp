@@ -44,6 +44,10 @@ static Panel s_panelRight(enumPanelRight, enumPanelOrientation0, PIN_RIGHT_N, PI
 #define JOY_LEFT_BUTTON     3
 #define JOY_RIGHT_BUTTON    4
 
+// Scheduling
+const uint32_t kJoystickUpdateFrequency = 1000;
+const uint32_t kLEDUpdateFrequency = 100;
+
 // Force calibration of sensors in each panel
 void calibratePanels()
 {
@@ -166,8 +170,8 @@ void decodeSextetStream()
 //
 // Input data can either be lighting data in SextetStream format or a command.
 // When the input is lighting data, no response is sent. All commands are
-// prefixed with `-` and may have a single-line response terminated with a
-// newline character (`\n`).
+// prefixed with `-` and terminated with a newline character. Commands may have
+// a single-line response terminated with a newline character (`\n`).
 class SerialProcessor
 {
 public:
@@ -440,8 +444,8 @@ static elapsedMicros s_timeSinceJoystickUpdate;
 static elapsedMicros s_timeSinceLEDUpdate;
 
 const uint32_t kMicrosPerSecond = 1000000;
-const uint32_t kJoystickUpdateFrequency = 1000;
-const uint32_t kLEDUpdateFrequency = 100;
+
+static const String kAutoLights("auto_lights");
 
 void loop()
 {
@@ -463,6 +467,13 @@ void loop()
     if(s_timeSinceLEDUpdate >= kMicrosPerSecond/kLEDUpdateFrequency)
     {
         s_timeSinceLEDUpdate -= kMicrosPerSecond/kLEDUpdateFrequency;
+        if(Configuration::getInstance()->getUInt16(kAutoLights, 0) > 0)
+        {
+            Lights::getInstance()->setStatus(enumLightsLeftArrow, s_panelLeft.isPressed());
+            Lights::getInstance()->setStatus(enumLightsRightArrow, s_panelRight.isPressed());
+            Lights::getInstance()->setStatus(enumLightsUpArrow, s_panelUp.isPressed());
+            Lights::getInstance()->setStatus(enumLightsDownArrow, s_panelDown.isPressed());
+        }
         Lights::getInstance()->update();
         FastLED.show();
     }

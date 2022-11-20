@@ -246,6 +246,7 @@ class Communicator:
                 west_pin=int(split.pop(0)),
             ),
             brightness=int(key_value_entries['brightness']),
+            auto_lights=int(key_value_entries['auto_lights']) > 0,
         )
 
         return config
@@ -352,6 +353,8 @@ class Communicator:
         )
 
     def set_color(self, panel, r, g, b) -> None:
+        """Set the color of an arrow light.
+        """
         if panel not in self.DIRECTIONS:
             raise ValueError('{panel} must be one of: {directions}'.format(
                 panel=panel,
@@ -362,15 +365,22 @@ class Communicator:
         self.__set_config_u32(f'color_{panel}', rgb)
 
     def set_brightness(self, brightness) -> None:
+        """Set maximum brightness for lights.
+        """
         if brightness < 0 or brightness > 255:
             raise ValueError('Brightness must be in [0, 255]')
 
         self.__set_config_u16('brightness', brightness)
 
     def set_arrow_lights(self, enabled) -> None:
-        """Turn all the arrow lights on or off
+        """Turn all the arrow lights on or off.
         """
         if enabled:
             self.__send_line('@@@O@@@@@@@@@')
         else:
             self.__send_line('@@@@@@@@@@@@@')
+
+    def set_auto_lights(self, enabled) -> None:
+        """Allow lights to be controlled by the pad in response to input.
+        """
+        self.__set_config_u16('auto_lights', 1 if enabled else 0)

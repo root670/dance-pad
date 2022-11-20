@@ -136,7 +136,7 @@
    </column>
    <column>
     <property name="text">
-     <string>Hit</string>
+     <string>Trigger</string>
     </property>
    </column>
    <column>
@@ -149,7 +149,7 @@
    <property name="geometry">
     <rect>
      <x>680</x>
-     <y>550</y>
+     <y>590</y>
      <width>251</width>
      <height>32</height>
     </rect>
@@ -161,14 +161,14 @@
   <widget class="QPushButton" name="pushButton_reset">
    <property name="geometry">
     <rect>
-     <x>850</x>
-     <y>590</y>
-     <width>81</width>
+     <x>680</x>
+     <y>550</y>
+     <width>251</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>Reset</string>
+    <string>Calibrate</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_colorUp">
@@ -244,9 +244,9 @@
   <widget class="QCheckBox" name="checkBox_displayLights">
    <property name="geometry">
     <rect>
-     <x>869</x>
-     <y>110</y>
-     <width>61</width>
+     <x>860</x>
+     <y>100</y>
+     <width>81</width>
      <height>21</height>
     </rect>
    </property>
@@ -254,7 +254,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="text">
-    <string>Lights</string>
+    <string>Lights Test</string>
    </property>
   </widget>
   <widget class="QSlider" name="horizontalSlider_brightness">
@@ -262,7 +262,7 @@
     <rect>
      <x>690</x>
      <y>110</y>
-     <width>131</width>
+     <width>121</width>
      <height>22</height>
     </rect>
    </property>
@@ -276,7 +276,7 @@
   <widget class="QLabel" name="labelBrightness">
    <property name="geometry">
     <rect>
-     <x>830</x>
+     <x>820</x>
      <y>110</y>
      <width>31</width>
      <height>21</height>
@@ -284,6 +284,19 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_autoLights">
+   <property name="geometry">
+    <rect>
+     <x>860</x>
+     <y>120</y>
+     <width>81</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Auto Lights</string>
    </property>
   </widget>
  </widget>
