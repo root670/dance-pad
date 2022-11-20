@@ -47,6 +47,7 @@ class Dialog(QDialog):
         self.pushButton_colorLeft.clicked.connect(self.on_left_color_clicked)
         self.pushButton_colorRight.clicked.connect(self.on_right_color_clicked)
 
+        self.horizontalSlider_brightness.valueChanged.connect(self.on_brightness_changed)
         self.checkBox_displayLights.toggled.connect(self.on_display_lights_toggled)
 
         # Setup plots
@@ -212,6 +213,7 @@ class Dialog(QDialog):
         self.tableThresholds.item(14,0).setText(str(config['right']['south_pin']))
         self.tableThresholds.item(15,0).setText(str(config['right']['west_pin']))
 
+        # Lights
         self.pushButton_colorUp.setStyleSheet(
             'background-color: rgb({},{},{})'.format(*config['up']['color'])
         )
@@ -224,6 +226,10 @@ class Dialog(QDialog):
         self.pushButton_colorRight.setStyleSheet(
             'background-color: rgb({},{},{})'.format(*config['right']['color'])
         )
+
+        # Light brightness/toggle
+        self.labelBrightness.setText(str(config['brightness']))
+        self.horizontalSlider_brightness.setValue(config['brightness'])
 
         self.labelDeviceInfo.setText(device_info)
 
@@ -266,6 +272,9 @@ class Dialog(QDialog):
     def on_display_lights_toggled(self, enabled):
         self.comm.set_arrow_lights(enabled)
 
+    def on_brightness_changed(self, brightness):
+        self.labelBrightness.setText(str(brightness))
+        self.comm.set_brightness(brightness)
 
 def main():
     """Entrypoint"""

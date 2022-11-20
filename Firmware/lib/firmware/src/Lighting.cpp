@@ -7,13 +7,10 @@
 #define NUM_LEDS_PER_STRIP  25
 #define NUM_STRIPS          4
 #define NUM_LEDS            NUM_LEDS_PER_STRIP * NUM_STRIPS
-#define BRIGHTNESS          200
 #define COLOR_ORDER         GRB
 
 static CRGB s_ledsRaw[NUM_LEDS];
 static CRGB s_ledsCorrected[NUM_LEDS];
-
-#define UPDATES_PER_SECOND  100
 
 // Any group of digital pins may be used by OctoWS2811 on the Teensy 4.1
 #define PIN_UP_LED      2
@@ -94,6 +91,7 @@ static const String s_strColorUp("color_up");
 static const String s_strColorDown("color_down");
 static const String s_strColorLeft("color_left");
 static const String s_strColorRight("color_right");
+static const String s_strBrightness("brightness");
 static const Lights::Color s_colorBlue(0x18, 0, 0xff);
 static const Lights::Color s_colorMag(0xeb, 0, 0x9b);
 
@@ -134,11 +132,10 @@ static void OnConfigUpdated()
 Lights::Lights()
     : m_bUp(false), m_bDown(false), m_bLeft(false), m_bRight(false)
 {
-    FastLED.addLeds(&s_controller, s_ledsCorrected, NUM_LEDS).setCorrection(TypicalLEDStrip);
-    FastLED.setBrightness(BRIGHTNESS);
-    FastLED.setMaxRefreshRate(0); // We will constrain this ourselves
-
     updateColors();
+
+    FastLED.addLeds(&s_controller, s_ledsCorrected, NUM_LEDS).setCorrection(TypicalLEDStrip);
+    FastLED.setMaxRefreshRate(0); // We will constrain this ourselves
 
     Configuration::getInstance()->registerCallback(OnConfigUpdated);
 }
@@ -157,6 +154,9 @@ void Lights::updateColors()
     s_colorRight.fromUInt32(
         Configuration::getInstance()->getUInt32(s_strColorRight, s_colorBlue.toUInt32())
     );
+    FastLED.setBrightness(static_cast<uint8_t>(
+        Configuration::getInstance()->getUInt16(s_strBrightness, 200)
+    ));
 }
 
 void Lights::illuminateStrip(lightIdentifier_t id, const CRGB &color)

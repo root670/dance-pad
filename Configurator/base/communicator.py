@@ -97,7 +97,6 @@ class Communicator:
         """
         self._ser.write(f'{line}\n'.encode('ascii'))
 
-
     def __get_line(self) -> str:
         """Get ASCII-encoded line from the device.
         """
@@ -130,7 +129,8 @@ class Communicator:
             raise ValueError(f'Unexpected response: {response}')
 
         if response != self.RESPONSE_SUCCESS:
-            raise ValueError(f'Failed to set config {key}[{value_type}]={value}')
+            raise ValueError(
+                f'Failed to set config {key}[{value_type}]={value}')
 
     def __set_config_u16(self, key: str, value) -> None:
         """Set a configuration item for an unsigned 16-bit integer.
@@ -175,7 +175,7 @@ class Communicator:
         """
         self.__send_command(self.COMMAND_CALIBRATE)
 
-    def set_thresholds(self, pin: int, trigger: int, release:int) -> None:
+    def set_thresholds(self, pin: int, trigger: int, release: int) -> None:
         """Set the tresholds for a sensor.
 
         Args:
@@ -212,7 +212,7 @@ class Communicator:
 
         key_value_entries = dict(entry.split('=') for entry in split[20:])
 
-        return dict(
+        config = dict(
             up=dict(
                 orientation=PanelOrientation.from_degrees(int(split.pop(0))),
                 color=Color.from_int(int(key_value_entries['color_up'])),
@@ -245,7 +245,10 @@ class Communicator:
                 south_pin=int(split.pop(0)),
                 west_pin=int(split.pop(0)),
             ),
+            brightness=int(key_value_entries['brightness']),
         )
+
+        return config
 
     def get_sensor_values(self) -> Mapping[str, Mapping[str, int]]:
         """Get current raw sensor values.
@@ -357,6 +360,12 @@ class Communicator:
 
         rgb = Color.to_int((r, g, b))
         self.__set_config_u32(f'color_{panel}', rgb)
+
+    def set_brightness(self, brightness) -> None:
+        if brightness < 0 or brightness > 255:
+            raise ValueError('Brightness must be in [0, 255]')
+
+        self.__set_config_u16('brightness', brightness)
 
     def set_arrow_lights(self, enabled) -> None:
         """Turn all the arrow lights on or off

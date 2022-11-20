@@ -76,3 +76,11 @@ class TestCommunicator:
 
         self.mock_serial.write.assert_called_once()
         self.mock_serial.readline.assert_called_once()
+
+    def test_set_color(self, setup):
+        self.mock_serial.readline.return_value = Communicator.RESPONSE_SUCCESS.encode('ascii')
+
+        self.communicator.set_color('up', 255, 255, 255)
+
+        assert self.mock_serial.write.call_count == 2
+        assert self.mock_serial.readline.call_count == 1
