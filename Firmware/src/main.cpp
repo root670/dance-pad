@@ -374,7 +374,7 @@ private:
        Configuration::getInstance()->write();
     }
 
-    // Reset configuration items in memory and in the EEPROM
+    // Reset configuration items in memory
     void onCommandReset()
     {
         Configuration::getInstance()->reset();

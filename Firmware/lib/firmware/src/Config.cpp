@@ -188,7 +188,6 @@ void Configuration::reset()
     m_mapUInt16.clear();
     m_mapUInt32.clear();
     m_bDirty = true;
-    write();
     notifyCallbacks();
 }
 

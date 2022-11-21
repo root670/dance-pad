@@ -32,7 +32,7 @@ public:
     // Write configuration to EEPROM if data is dirty
     void write();
 
-    // Remove all configuration menus from memory and EEPROM.
+    // Reset all configuration items in memory
     void reset();
 
     // Get string representation of configuration items in the form
