@@ -7,7 +7,7 @@ import os
 import re
 
 from PyQt5 import uic
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QDialog, QTableWidgetItem, QColorDialog
 from PyQt5.QtGui import QColor
 import numpy as np
@@ -40,6 +40,7 @@ class Dialog(QDialog):
             self.comboBoxDevices.addItem(f'{index}: {port.device}')
 
         self.pushButton_reset.clicked.connect(self.on_reset_clicked)
+        self.pushButton_save.clicked.connect(self.on_save_clicked)
 
         # Setup lighting controls
         self.pushButton_colorUp.clicked.connect(self.on_up_color_clicked)
@@ -95,10 +96,19 @@ class Dialog(QDialog):
 
         # Setup table
         for row in range(16):
-            self.tableThresholds.setItem(row, 0, QTableWidgetItem(str(row)))
-            self.tableThresholds.setItem(row, 1, QTableWidgetItem('-'))
+            pin_item = QTableWidgetItem(str(row))
+            pin_item.setFlags(pin_item.flags() & ~Qt.ItemIsEnabled)
+            self.tableThresholds.setItem(row, 0, pin_item)
+            value_item = QTableWidgetItem('-')
+            value_item.setFlags(value_item.flags() & ~Qt.ItemIsEditable)
+            self.tableThresholds.setItem(row, 1,value_item)
             self.tableThresholds.setItem(row, 2, QTableWidgetItem('-'))
             self.tableThresholds.setItem(row, 3, QTableWidgetItem('-'))
+
+        # Set all
+        self.lineEdit_trigger.setText('150')
+        self.lineEdit_release.setText('110')
+        self.pushButton_setAll.clicked.connect(self.on_set_all_clicked)
 
         # Call the update function periodically
         timer = QTimer(self)
@@ -121,55 +131,22 @@ class Dialog(QDialog):
             self.data_sensors[idx] = np.roll(self.data_sensors[idx], -1)
 
         values = self.comm.get_sensor_values()
-        # print(values)
         self.data_sensors[0][-1] = values['up']['north']['value']
-        self.tableThresholds.setItem(0, 2, QTableWidgetItem(str(values['up']['north']['trigger_threshold'])))
-        self.tableThresholds.setItem(0, 3, QTableWidgetItem(str(values['up']['north']['release_threshold'])))
         self.data_sensors[1][-1] = values['up']['east']['value']
-        self.tableThresholds.setItem(1, 2, QTableWidgetItem(str(values['up']['east']['trigger_threshold'])))
-        self.tableThresholds.setItem(1, 3, QTableWidgetItem(str(values['up']['east']['release_threshold'])))
         self.data_sensors[2][-1] = values['up']['south']['value']
-        self.tableThresholds.setItem(2, 2, QTableWidgetItem(str(values['up']['south']['trigger_threshold'])))
-        self.tableThresholds.setItem(2, 3, QTableWidgetItem(str(values['up']['south']['release_threshold'])))
         self.data_sensors[3][-1] = values['up']['west']['value']
-        self.tableThresholds.setItem(3, 2, QTableWidgetItem(str(values['up']['west']['trigger_threshold'])))
-        self.tableThresholds.setItem(3, 3, QTableWidgetItem(str(values['up']['west']['release_threshold'])))
         self.data_sensors[4][-1] = values['down']['north']['value']
-        self.tableThresholds.setItem(4, 2, QTableWidgetItem(str(values['down']['north']['trigger_threshold'])))
-        self.tableThresholds.setItem(4, 3, QTableWidgetItem(str(values['down']['north']['release_threshold'])))
         self.data_sensors[5][-1] = values['down']['east']['value']
-        self.tableThresholds.setItem(5, 2, QTableWidgetItem(str(values['down']['east']['trigger_threshold'])))
-        self.tableThresholds.setItem(5, 3, QTableWidgetItem(str(values['down']['east']['release_threshold'])))
         self.data_sensors[6][-1] = values['down']['south']['value']
-        self.tableThresholds.setItem(6, 2, QTableWidgetItem(str(values['down']['south']['trigger_threshold'])))
-        self.tableThresholds.setItem(6, 3, QTableWidgetItem(str(values['down']['south']['release_threshold'])))
         self.data_sensors[7][-1] = values['down']['west']['value']
-        self.tableThresholds.setItem(7, 2, QTableWidgetItem(str(values['down']['west']['trigger_threshold'])))
-        self.tableThresholds.setItem(7, 3, QTableWidgetItem(str(values['down']['west']['release_threshold'])))
         self.data_sensors[8][-1] = values['left']['north']['value']
-        self.tableThresholds.setItem(8, 2, QTableWidgetItem(str(values['left']['north']['trigger_threshold'])))
-        self.tableThresholds.setItem(8, 3, QTableWidgetItem(str(values['left']['north']['release_threshold'])))
         self.data_sensors[9][-1] = values['left']['east']['value']
-        self.tableThresholds.setItem(9, 2, QTableWidgetItem(str(values['left']['east']['trigger_threshold'])))
-        self.tableThresholds.setItem(9, 3, QTableWidgetItem(str(values['left']['east']['release_threshold'])))
         self.data_sensors[10][-1] = values['left']['south']['value']
-        self.tableThresholds.setItem(10, 2, QTableWidgetItem(str(values['left']['south']['trigger_threshold'])))
-        self.tableThresholds.setItem(10, 3, QTableWidgetItem(str(values['left']['south']['release_threshold'])))
         self.data_sensors[11][-1] = values['left']['west']['value']
-        self.tableThresholds.setItem(11, 2, QTableWidgetItem(str(values['left']['west']['trigger_threshold'])))
-        self.tableThresholds.setItem(11, 3, QTableWidgetItem(str(values['left']['west']['release_threshold'])))
         self.data_sensors[12][-1] = values['right']['north']['value']
-        self.tableThresholds.setItem(12, 2, QTableWidgetItem(str(values['right']['north']['trigger_threshold'])))
-        self.tableThresholds.setItem(12, 3, QTableWidgetItem(str(values['right']['north']['release_threshold'])))
         self.data_sensors[13][-1] = values['right']['east']['value']
-        self.tableThresholds.setItem(13, 2, QTableWidgetItem(str(values['right']['east']['trigger_threshold'])))
-        self.tableThresholds.setItem(13, 3, QTableWidgetItem(str(values['right']['east']['release_threshold'])))
         self.data_sensors[14][-1] = values['right']['south']['value']
-        self.tableThresholds.setItem(14, 2, QTableWidgetItem(str(values['right']['south']['trigger_threshold'])))
-        self.tableThresholds.setItem(14, 3, QTableWidgetItem(str(values['right']['south']['release_threshold'])))
         self.data_sensors[15][-1] = values['right']['west']['value']
-        self.tableThresholds.setItem(15, 2, QTableWidgetItem(str(values['right']['west']['trigger_threshold'])))
-        self.tableThresholds.setItem(15, 3, QTableWidgetItem(str(values['right']['west']['release_threshold'])))
 
         # Update curves
         y = 0
@@ -182,7 +159,6 @@ class Dialog(QDialog):
         self.x += 1
 
     def on_device_changed(self, index: int):
-
         device = self.serial_ports[index - 1].device
         try:
             serial = Serial(device)
@@ -198,22 +174,16 @@ class Dialog(QDialog):
 
         config = self.comm.get_config()
 
-        self.tableThresholds.item(0,0).setText(str(config['up']['north_pin']))
-        self.tableThresholds.item(1,0).setText(str(config['up']['east_pin']))
-        self.tableThresholds.item(2,0).setText(str(config['up']['south_pin']))
-        self.tableThresholds.item(3,0).setText(str(config['up']['west_pin']))
-        self.tableThresholds.item(4,0).setText(str(config['down']['north_pin']))
-        self.tableThresholds.item(5,0).setText(str(config['down']['east_pin']))
-        self.tableThresholds.item(6,0).setText(str(config['down']['south_pin']))
-        self.tableThresholds.item(7,0).setText(str(config['down']['west_pin']))
-        self.tableThresholds.item(8,0).setText(str(config['left']['north_pin']))
-        self.tableThresholds.item(9,0).setText(str(config['left']['east_pin']))
-        self.tableThresholds.item(10,0).setText(str(config['left']['south_pin']))
-        self.tableThresholds.item(11,0).setText(str(config['left']['west_pin']))
-        self.tableThresholds.item(12,0).setText(str(config['right']['north_pin']))
-        self.tableThresholds.item(13,0).setText(str(config['right']['east_pin']))
-        self.tableThresholds.item(14,0).setText(str(config['right']['south_pin']))
-        self.tableThresholds.item(15,0).setText(str(config['right']['west_pin']))
+        # Update table
+        idx = 0
+        for panel in ['up', 'down', 'left', 'right']:
+            for direction in ['north', 'east', 'south', 'west']:
+                self.tableThresholds.item(idx,0).setText(str(config[panel][f'{direction}_pin']))
+                self.tableThresholds.item(idx,2).setText(config[panel][f'{direction}_trigger'])
+                self.tableThresholds.item(idx,3).setText(config[panel][f'{direction}_release'])
+                idx += 1
+
+        self.tableThresholds.itemChanged.connect(self.on_table_item_changed)
 
         # Lights
         self.pushButton_colorUp.setStyleSheet(
@@ -234,10 +204,13 @@ class Dialog(QDialog):
         self.horizontalSlider_brightness.setValue(config['brightness'])
         self.checkBox_autoLights.setCheckState(2 if config['auto_lights'] else 0)
 
-        self.labelDeviceInfo.setText(device_info)
+        self.config = config
 
     def on_reset_clicked(self):
         self.comm.calibrate()
+
+    def on_save_clicked(self):
+        self.comm.persist()
 
     @staticmethod
     def __get_color_from_stylesheet(stylesheet):
@@ -281,6 +254,31 @@ class Dialog(QDialog):
     def on_brightness_changed(self, brightness):
         self.labelBrightness.setText(str(brightness))
         self.comm.set_brightness(brightness)
+
+    def on_set_all_clicked(self):
+        trigger = int(self.lineEdit_trigger.text())
+        release = int(self.lineEdit_release.text())
+        for panel in ['up', 'down', 'left', 'right']:
+            for direction in ['north', 'east', 'south', 'west']:
+                self.comm.set_thresholds(self.config[panel][f'{direction}_pin'], trigger, release)
+        self.comm.calibrate()
+        for row in range(16):
+            self.tableThresholds.item(row,2).setText(str(trigger))
+            self.tableThresholds.item(row,3).setText(str(release))
+
+    def on_table_item_changed(self, item):
+        if item.column() == 1:
+            return  # Ignore Value column
+        row = int(item.row())
+        col = int(item.column())
+        pin = int(self.tableThresholds.item(row, 0).text())
+
+        trigger = int(item.text() if col == 2 else self.tableThresholds.item(row, 2).text())
+        release = int(item.text() if col == 3 else self.tableThresholds.item(row, 3).text())
+        print(f'trigger={trigger} release={release}')
+
+        self.comm.set_thresholds(pin, trigger, release)
+
 
 def main():
     """Entrypoint"""

@@ -47,9 +47,9 @@ class Color:
             value = color[component]
             if value < 0 or value > 255:
                 raise ValueError(
-            '{component} component of color must be in range [0, 255].'.format(
-                component='RGB'[component]
-            ))
+                    '{component} component of color must be in range [0, 255].'.format(
+                        component='RGB'[component]
+                    ))
 
         return color[0] | (color[1] << 8) | (color[2] << 16)
 
@@ -249,6 +249,13 @@ class Communicator:
             auto_lights=int(key_value_entries['auto_lights']) > 0,
         )
 
+        # Add trigger/release thresholds
+        for panel in {'up', 'down', 'left', 'right'}:
+            for direction in {'north', 'east', 'south', 'west'}:
+                for opt in {'trigger', 'release'}:
+                    config[panel][f'{direction}_{opt}'] = key_value_entries['sensor{num}{opt}'.format(
+                        num=config[panel][f'{direction}_pin'], opt=opt)]
+
         return config
 
     def get_sensor_values(self) -> Mapping[str, Mapping[str, int]]:
@@ -359,7 +366,7 @@ class Communicator:
             raise ValueError('{panel} must be one of: {directions}'.format(
                 panel=panel,
                 directions=', '.join(self.DIRECTIONS)
-        ))
+            ))
 
         rgb = Color.to_int((r, g, b))
         self.__set_config_u32(f'color_{panel}', rgb)
@@ -384,3 +391,8 @@ class Communicator:
         """Allow lights to be controlled by the pad in response to input.
         """
         self.__set_config_u16('auto_lights', 1 if enabled else 0)
+
+    def persist(self) -> None:
+        """Save all configuration to EEPROM.
+        """
+        self.__send_command(self.COMMAND_PERSIST)
