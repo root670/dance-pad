@@ -6,13 +6,12 @@ import time
 import os
 import re
 
-from PyQt5 import uic
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QApplication, QDialog, QTableWidgetItem, QColorDialog
-from PyQt5.QtGui import QColor
+from PyQt6 import uic
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QApplication, QDialog, QTableWidgetItem, QColorDialog
+from PyQt6.QtGui import QColor
 import numpy as np
 import pyqtgraph as pg
-import qdarkstyle
 from serial.tools import list_ports
 from serial import Serial
 
@@ -97,11 +96,11 @@ class Dialog(QDialog):
         # Setup table
         for row in range(16):
             pin_item = QTableWidgetItem(str(row))
-            pin_item.setFlags(pin_item.flags() & ~Qt.ItemIsEnabled)
+            pin_item.setFlags(pin_item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
             self.tableThresholds.setItem(row, 0, pin_item)
             value_item = QTableWidgetItem('-')
-            value_item.setFlags(value_item.flags() & ~Qt.ItemIsEditable)
-            self.tableThresholds.setItem(row, 1,value_item)
+            value_item.setFlags(value_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+            self.tableThresholds.setItem(row, 1, value_item)
             self.tableThresholds.setItem(row, 2, QTableWidgetItem('-'))
             self.tableThresholds.setItem(row, 3, QTableWidgetItem('-'))
 
@@ -178,9 +177,9 @@ class Dialog(QDialog):
         idx = 0
         for panel in ['up', 'down', 'left', 'right']:
             for direction in ['north', 'east', 'south', 'west']:
-                self.tableThresholds.item(idx,0).setText(str(config[panel][f'{direction}_pin']))
-                self.tableThresholds.item(idx,2).setText(config[panel][f'{direction}_trigger'])
-                self.tableThresholds.item(idx,3).setText(config[panel][f'{direction}_release'])
+                self.tableThresholds.item(idx, 0).setText(str(config[panel][f'{direction}_pin']))
+                self.tableThresholds.item(idx, 2).setText(config[panel][f'{direction}_trigger'])
+                self.tableThresholds.item(idx, 3).setText(config[panel][f'{direction}_release'])
                 idx += 1
 
         self.tableThresholds.itemChanged.connect(self.on_table_item_changed)
@@ -224,7 +223,7 @@ class Dialog(QDialog):
         current_color = self.__get_color_from_stylesheet(widget.styleSheet())
         color = QColorDialog.getColor(QColor.fromRgb(*current_color))
         if not color.isValid():
-            return # Closed the color dialog
+            return  # Closed the color dialog
 
         color_rgb = (color.red(), color.green(), color.blue())
         widget.setStyleSheet(
@@ -235,7 +234,7 @@ class Dialog(QDialog):
 
     def on_up_color_clicked(self):
         self.__on_color_clicked(self.pushButton_colorUp, 'up')
-    
+
     def on_down_color_clicked(self):
         self.__on_color_clicked(self.pushButton_colorDown, 'down')
 
@@ -263,8 +262,8 @@ class Dialog(QDialog):
                 self.comm.set_thresholds(self.config[panel][f'{direction}_pin'], trigger, release)
         self.comm.calibrate()
         for row in range(16):
-            self.tableThresholds.item(row,2).setText(str(trigger))
-            self.tableThresholds.item(row,3).setText(str(release))
+            self.tableThresholds.item(row, 2).setText(str(trigger))
+            self.tableThresholds.item(row, 3).setText(str(release))
 
     def on_table_item_changed(self, item):
         if item.column() == 1:
@@ -284,10 +283,9 @@ def main():
     """Entrypoint"""
 
     app = QApplication(sys.argv)
-    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     gui = Dialog()
     gui.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

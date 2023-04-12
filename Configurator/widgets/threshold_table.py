@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QTableWidget, QMessageBox
-from PyQt5 import Qt
+from PyQt6.QtWidgets import QTableWidget
+
 
 class ThresholdTable(QTableWidget):
     def __init__(self, parent=None):
@@ -10,7 +10,7 @@ class ThresholdTable(QTableWidget):
 
         if key == 16777220:
             if self.currentColumn() in {0, 1}:
-                return # Ignore the Pin and Value column
+                return  # Ignore the Pin and Value column
 
             cur = self.currentItem()
             font = cur.font()
