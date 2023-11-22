@@ -34,7 +34,7 @@ from serial import Serial
 from serial.serialutil import SerialException
 
 
-SERIAL_PORTS = ['COM3', 'COM4']
+SERIAL_PORTS = ['COM3', 'COM54']
 MAME_IP = '127.0.0.1'
 MAME_PORT = 8000  # This is hardcoded in MAME and cannot be changed
 
@@ -107,9 +107,6 @@ class LightsEncoder:
         try:
             while True:
                 try:
-                    # if self._serial.in_waiting > 0:
-                        # print(self._serial.read_all().decode('ascii'))
-
                     commands = self._socket.recv(1024).decode('ascii').split('\r')[:-1]
 
                 except socket.timeout:
@@ -150,17 +147,13 @@ class LightsEncoder:
 
                     if value == '1':
                         self._data[byte_offset] |= bit_active
-                        # print(name + ' on')
                     else:
                         self._data[byte_offset] &= ~bit_active
-                        # print(name + ' off')
 
                     send_update = True
 
                 if send_update:
                     out = (''.join(map(self.to_printable, self._data)) + '\n').encode('ascii')
-
-                    print(out.decode('ascii'))
 
                     self.send_to_serial(out)
 
