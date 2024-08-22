@@ -1,0 +1,17 @@
+---
+BasedOnStyle: LLVM
+ColumnLimit: 80
+UseTab: Never
+UseCRLF: false
+IndentWidth: 2
+BracedInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+BinPackParameters: false
+BinPackArguments: false
+AlignAfterOpenBracket: AlwaysBreak
+InsertBraces: true
+AlwaysBreakTemplateDeclarations: Yes
+PointerAlignment: Left
+AlignConsecutiveMacros: Consecutive
+AlignTrailingComments: Never
+InsertTrailingCommas: Wrapped
