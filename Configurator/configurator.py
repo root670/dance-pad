@@ -32,7 +32,11 @@ class Dialog(QDialog):
 
         self.comm = None
 
-        self.serial_ports = list_ports.comports()
+        self.serial_ports = [
+            port
+            for port in list_ports.comports()
+            if port.vid == 0x16c0  # Teensy
+        ]
         self.comboBoxDevices.activated.connect(self.on_device_changed)
         self.comboBoxDevices.addItem('Devices')
         for index, port in enumerate(self.serial_ports):
@@ -47,36 +51,54 @@ class Dialog(QDialog):
         self.pushButton_colorLeft.clicked.connect(self.on_left_color_clicked)
         self.pushButton_colorRight.clicked.connect(self.on_right_color_clicked)
 
-        self.horizontalSlider_brightness.valueChanged.connect(self.on_brightness_changed)
-        self.checkBox_displayLights.toggled.connect(self.on_display_lights_toggled)
+        self.horizontalSlider_brightness.valueChanged.connect(
+            self.on_brightness_changed)
+        self.checkBox_displayLights.toggled.connect(
+            self.on_display_lights_toggled)
         self.checkBox_autoLights.toggled.connect(self.on_auto_lights_toggled)
 
         # Setup plots
         self.data_sensors = [np.zeros(250, dtype=np.int16)] * 16
 
         self.curves_up = [
-            self.plot_up.plot(self.data_sensors[0], pen=pg.mkPen('r', width=3)),
-            self.plot_up.plot(self.data_sensors[1], pen=pg.mkPen('g', width=3)),
-            self.plot_up.plot(self.data_sensors[2], pen=pg.mkPen('w', width=3)),
-            self.plot_up.plot(self.data_sensors[3], pen=pg.mkPen('y', width=3)),
+            self.plot_up.plot(
+                self.data_sensors[0], pen=pg.mkPen('r', width=3)),
+            self.plot_up.plot(
+                self.data_sensors[1], pen=pg.mkPen('g', width=3)),
+            self.plot_up.plot(
+                self.data_sensors[2], pen=pg.mkPen('w', width=3)),
+            self.plot_up.plot(
+                self.data_sensors[3], pen=pg.mkPen('y', width=3)),
         ]
         self.curves_down = [
-            self.plot_down.plot(self.data_sensors[4], pen=pg.mkPen('r', width=3)),
-            self.plot_down.plot(self.data_sensors[5], pen=pg.mkPen('g', width=3)),
-            self.plot_down.plot(self.data_sensors[6], pen=pg.mkPen('w', width=3)),
-            self.plot_down.plot(self.data_sensors[7], pen=pg.mkPen('y', width=3)),
+            self.plot_down.plot(
+                self.data_sensors[4], pen=pg.mkPen('r', width=3)),
+            self.plot_down.plot(
+                self.data_sensors[5], pen=pg.mkPen('g', width=3)),
+            self.plot_down.plot(
+                self.data_sensors[6], pen=pg.mkPen('w', width=3)),
+            self.plot_down.plot(
+                self.data_sensors[7], pen=pg.mkPen('y', width=3)),
         ]
         self.curves_left = [
-            self.plot_left.plot(self.data_sensors[8], pen=pg.mkPen('r', width=3)),
-            self.plot_left.plot(self.data_sensors[9], pen=pg.mkPen('g', width=3)),
-            self.plot_left.plot(self.data_sensors[10], pen=pg.mkPen('w', width=3)),
-            self.plot_left.plot(self.data_sensors[11], pen=pg.mkPen('y', width=3)),
+            self.plot_left.plot(
+                self.data_sensors[8], pen=pg.mkPen('r', width=3)),
+            self.plot_left.plot(
+                self.data_sensors[9], pen=pg.mkPen('g', width=3)),
+            self.plot_left.plot(
+                self.data_sensors[10], pen=pg.mkPen('w', width=3)),
+            self.plot_left.plot(
+                self.data_sensors[11], pen=pg.mkPen('y', width=3)),
         ]
         self.curves_right = [
-            self.plot_right.plot(self.data_sensors[12], pen=pg.mkPen('r', width=3)),
-            self.plot_right.plot(self.data_sensors[13], pen=pg.mkPen('g', width=3)),
-            self.plot_right.plot(self.data_sensors[14], pen=pg.mkPen('w', width=3)),
-            self.plot_right.plot(self.data_sensors[15], pen=pg.mkPen('y', width=3)),
+            self.plot_right.plot(
+                self.data_sensors[12], pen=pg.mkPen('r', width=3)),
+            self.plot_right.plot(
+                self.data_sensors[13], pen=pg.mkPen('g', width=3)),
+            self.plot_right.plot(
+                self.data_sensors[14], pen=pg.mkPen('w', width=3)),
+            self.plot_right.plot(
+                self.data_sensors[15], pen=pg.mkPen('y', width=3)),
         ]
 
         self.x = 0
@@ -99,7 +121,8 @@ class Dialog(QDialog):
             pin_item.setFlags(pin_item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
             self.tableThresholds.setItem(row, 0, pin_item)
             value_item = QTableWidgetItem('-')
-            value_item.setFlags(value_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+            value_item.setFlags(value_item.flags() & ~
+                                Qt.ItemFlag.ItemIsEditable)
             self.tableThresholds.setItem(row, 1, value_item)
             self.tableThresholds.setItem(row, 2, QTableWidgetItem('-'))
             self.tableThresholds.setItem(row, 3, QTableWidgetItem('-'))
@@ -151,13 +174,17 @@ class Dialog(QDialog):
         y = 0
         for direction in [self.curves_up, self.curves_down, self.curves_left, self.curves_right]:
             for sensor in direction:
-                self.tableThresholds.item(y, 1).setText(str(self.data_sensors[y][-1]))
+                self.tableThresholds.item(y, 1).setText(
+                    str(self.data_sensors[y][-1]))
                 sensor.setData(self.data_sensors[y])
                 y += 1
 
         self.x += 1
 
     def on_device_changed(self, index: int):
+        if index == 0:
+            return
+
         device = self.serial_ports[index - 1].device
         try:
             serial = Serial(device)
@@ -177,9 +204,12 @@ class Dialog(QDialog):
         idx = 0
         for panel in ['up', 'down', 'left', 'right']:
             for direction in ['north', 'east', 'south', 'west']:
-                self.tableThresholds.item(idx, 0).setText(str(config[panel][f'{direction}_pin']))
-                self.tableThresholds.item(idx, 2).setText(config[panel][f'{direction}_trigger'])
-                self.tableThresholds.item(idx, 3).setText(config[panel][f'{direction}_release'])
+                self.tableThresholds.item(idx, 0).setText(
+                    str(config[panel][f'{direction}_pin']))
+                self.tableThresholds.item(idx, 2).setText(
+                    config[panel][f'{direction}_trigger'])
+                self.tableThresholds.item(idx, 3).setText(
+                    config[panel][f'{direction}_release'])
                 idx += 1
 
         self.tableThresholds.itemChanged.connect(self.on_table_item_changed)
@@ -201,7 +231,8 @@ class Dialog(QDialog):
         # Lights
         self.labelBrightness.setText(str(config['brightness']))
         self.horizontalSlider_brightness.setValue(config['brightness'])
-        self.checkBox_autoLights.setCheckState(2 if config['auto_lights'] else 0)
+        self.checkBox_autoLights.setCheckState(
+            Qt.CheckState.Checked if config['auto_lights'] else Qt.CheckState.Unchecked)
 
         self.config = config
 
@@ -216,7 +247,8 @@ class Dialog(QDialog):
         """Get a 3-tuple of the RGB value from the `background-color` property
         in `stylesheet`.
         """
-        pattern = re.compile(r'background-color: rgb\(([0-9]+),\s*([0-9]+),\s*([0-9]+)\)')
+        pattern = re.compile(
+            r'background-color: rgb\(([0-9]+),\s*([0-9]+),\s*([0-9]+)\)')
         return tuple(map(int, pattern.search(stylesheet).groups()))
 
     def __on_color_clicked(self, widget, panel):
@@ -259,7 +291,8 @@ class Dialog(QDialog):
         release = int(self.lineEdit_release.text())
         for panel in ['up', 'down', 'left', 'right']:
             for direction in ['north', 'east', 'south', 'west']:
-                self.comm.set_thresholds(self.config[panel][f'{direction}_pin'], trigger, release)
+                self.comm.set_thresholds(
+                    self.config[panel][f'{direction}_pin'], trigger, release)
         self.comm.calibrate()
         for row in range(16):
             self.tableThresholds.item(row, 2).setText(str(trigger))
@@ -272,9 +305,10 @@ class Dialog(QDialog):
         col = int(item.column())
         pin = int(self.tableThresholds.item(row, 0).text())
 
-        trigger = int(item.text() if col == 2 else self.tableThresholds.item(row, 2).text())
-        release = int(item.text() if col == 3 else self.tableThresholds.item(row, 3).text())
-        print(f'trigger={trigger} release={release}')
+        trigger = int(item.text() if col ==
+                      2 else self.tableThresholds.item(row, 2).text())
+        release = int(item.text() if col ==
+                      3 else self.tableThresholds.item(row, 3).text())
 
         self.comm.set_thresholds(pin, trigger, release)
 

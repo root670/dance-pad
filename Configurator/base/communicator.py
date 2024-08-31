@@ -74,6 +74,7 @@ class Communicator:
     RESPONSE_FAILURE = '?'
 
     DIRECTIONS = {'up', 'down', 'left', 'right'}
+    CONFIG_VALUE_TYPES = {CONFIG_TYPE_STRING, CONFIG_TYPE_U16, CONFIG_TYPE_U32}
 
     def __init__(
         self,
@@ -100,7 +101,8 @@ class Communicator:
     def __get_line(self) -> str:
         """Get ASCII-encoded line from the device.
         """
-        return self._ser.readline().decode('ascii').strip()
+        line = self._ser.readline().decode('ascii').strip()
+        return line
 
     def __send_command(self, command: str) -> None:
         """Send command to the device.
@@ -118,6 +120,9 @@ class Communicator:
             key: Name of configuration item.
             value: The value to set the configuration item to.
         """
+        if value_type not in self.CONFIG_VALUE_TYPES:
+            raise ValueError(
+                f"`value_type` must be one of {', '.join(self.CONFIG_VALUE_TYPES)}")
         self.__send_command(self.COMMAND_SETCONFIG)
         self.__send_line(f'{value_type} {key}={value}')
         response = self.__get_line()
@@ -192,8 +197,7 @@ class Communicator:
             raise ValueError('`release` must be in range [0, 1024).')
         if release > trigger:
             raise ValueError(
-                '`trigger` must be greater than or equal to `release`'
-            )
+                f'trigger ({trigger}) must be greater than or equal to release ({release})')
 
         key_name = f'sensor{pin}'
 
@@ -267,7 +271,9 @@ class Communicator:
             `release_threshold` values.
         """
         self.__send_command(self.COMMAND_VALUES)
-        values = self.__get_line().split(',')
+        line = self.__get_line()
+        # print(line)
+        values = line.split(',')
         return dict(
             up=dict(
                 north=dict(
